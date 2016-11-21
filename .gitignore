@@ -1,3 +1,6 @@
+# Shadow build directories
+_b
+
 # Compiled Object files
 *.slo
 *.lo
