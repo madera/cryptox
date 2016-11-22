@@ -24,7 +24,7 @@ namespace cryptox {
 		>::digest_type digest_type;
 	public:
 		message_digest() {
-			assert(detail::message_digest_traits<EVP_sha256>::digest_size == EVP_MD_size(Digest()));
+			assert(detail::message_digest_traits<Digest>::digest_size == EVP_MD_size(Digest()));
 
 			_context = EVP_MD_CTX_create();
 			if (!_context)
@@ -46,8 +46,9 @@ namespace cryptox {
 				EVP_MD_CTX_destroy(_context);
 		}
 
-		this_type& update(const std::uint8_t* data, const size_t size) {
-			if (EVP_DigestUpdate(_context, data, size) != 1)
+		template <typename Byte>
+		this_type& update(const Byte* data, const size_t size) {
+			if (EVP_DigestUpdate(_context, (const std::uint8_t*)data, size) != 1)
 				throw std::runtime_error("TBD: Exception001");
 
 			return *this;
