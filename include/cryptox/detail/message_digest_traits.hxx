@@ -34,3 +34,11 @@ namespace cryptox { namespace detail {
 		typedef boost::array<std::uint8_t, digest_size> digest_type;
 	};
 }}
+
+namespace cryptox { namespace detail {
+	template <>
+	struct message_digest_traits<EVP_sha512> {
+		enum { digest_size = 512/8 };
+		typedef boost::array<std::uint8_t, digest_size> digest_type;
+	};
+}}
