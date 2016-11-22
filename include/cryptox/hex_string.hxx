@@ -10,6 +10,7 @@
 // [===========================================================================]
 
 #pragma once
+#include <boost/array.hpp>
 #include <string>
 #include <iterator>
 
@@ -33,6 +34,13 @@ namespace cryptox {
 	std::string hex_string(InputIterator first, InputIterator last) {
 		std::string result;
 		detail::copy_hex_string(first, last, std::back_inserter(result));
+		return result;
+	}
+
+	template <class T, std::size_t N>
+	std::string hex_string(const boost::array<T, N>& array) {
+		std::string result;
+		detail::copy_hex_string(array.begin(), array.end(), std::back_inserter(result));
 		return result;
 	}
 
