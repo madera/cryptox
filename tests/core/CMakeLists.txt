@@ -14,6 +14,7 @@ include_directories(.)
 add_executable(core_tests
 	main.cxx
 	cryptox/message_digest_test.cxx
+	cryptox/hex_string_test.cxx
 )
 
 target_link_libraries(
