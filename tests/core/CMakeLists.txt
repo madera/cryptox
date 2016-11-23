@@ -13,7 +13,7 @@ include_directories(.)
 
 add_executable(core_tests
 	main.cxx
-	cryptox/message_digest_test.cxx
+	cryptox/message_digester_test.cxx
 	cryptox/hex_string_test.cxx
 	cryptox/hash_test.cxx
 )

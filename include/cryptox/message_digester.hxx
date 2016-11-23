@@ -16,32 +16,28 @@
 
 namespace cryptox {
 
-	template <message_digest_fx_t Digest>
-	struct message_digest : boost::noncopyable {
-		typedef message_digest this_type;
-		typedef typename detail::message_digest_traits<
-			Digest
-		>::digest_type digest_type;
+	template <class Digest>
+	struct message_digester : boost::noncopyable {
+		typedef message_digester this_type;
+		typedef typename Digest::digest_type digest_type;
 	public:
-		message_digest() {
-			assert(detail::message_digest_traits<Digest>::digest_size == EVP_MD_size(Digest()));
-
+		message_digester() {
 			_context = EVP_MD_CTX_create();
 			if (!_context)
 				throw std::bad_alloc();
 
-			if (EVP_DigestInit_ex(_context, Digest(), NULL) == 0)
+			if (EVP_DigestInit_ex(_context, Digest::evp_message_digest()(), NULL) == 0)
 				throw std::runtime_error("TBD: Exception000");
 		}
 
 	#if 0 // C++11
-		message_digest(message_digest&& other) {
+		message_digester(message_digest&& other) {
 			_context = other._context;
 			other._context = nullptr;
 		}
 	#endif
 
-		~message_digest() {
+		~message_digester() {
 			if (_context)
 				EVP_MD_CTX_destroy(_context);
 		}
@@ -50,9 +46,10 @@ namespace cryptox {
 		this_type& update(const Byte* data, const size_t size) {
 			if (EVP_DigestUpdate(_context, (const std::uint8_t*)data, size) != 1)
 				throw std::runtime_error("TBD: Exception001");
-
 			return *this;
 		}
+
+		// TODO: update() for containers.
 
 		digest_type digest() {
 			digest_type result;
@@ -60,6 +57,7 @@ namespace cryptox {
 				throw std::runtime_error("TBD: Exception002");
 			return result;
 		}
+
 	private:
 		EVP_MD_CTX* _context;
 	};
