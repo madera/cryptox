@@ -15,9 +15,9 @@
 
 namespace cryptox {
 
-	template <class Digest>
+	template <class Algorithm>
 	std::string hash(const std::string& data) {
-		return hex_string(digest(data.c_str(), data.size()));
+		return hex_string(digest<Algorithm>(data.c_str(), data.size()));
 	}
 
 }
