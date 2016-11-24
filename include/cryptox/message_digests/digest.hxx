@@ -9,9 +9,16 @@
 // [                            All Rights Reserved                            ]
 // [===========================================================================]
 
-#include "pch.hxx"
-#include <cryptox/message_digests/message_digester.hxx>
+#pragma once
+#include "message_digester.hxx"
 
-// No specific binary tests done here. Instead we safely delegate them to
-// hash<>'s internal tests, which depend on digest<>, which depends on
-// message_digester<>.
+namespace cryptox {
+
+	template <class Algorithm, typename Byte>
+	typename Algorithm::digest_type digest(const Byte* data, const size_t size) {
+		message_digester<Algorithm> digester;
+		digester.update(data, size);
+		return digester.digest();
+	}
+
+}

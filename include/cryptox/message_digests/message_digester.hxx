@@ -20,7 +20,7 @@ namespace cryptox {
 	struct message_digester : boost::noncopyable {
 		typedef message_digester this_type;
 		typedef typename Algorithm::digest_type digest_type;
-	public:
+
 		message_digester() {
 			_context = EVP_MD_CTX_create();
 			if (!_context)
@@ -62,12 +62,4 @@ namespace cryptox {
 		EVP_MD_CTX* _context;
 	};
 
-	// TODO: Move
-/*	template <class Algorithm>
-	typename Algorithm::digest_type digest(const char* data) {
-		message_digester<Algorithm> digester;
-		digester.update(data.c_str(), data.size());
-		return hex_string(digester.digest());
-	}
-*/
 }

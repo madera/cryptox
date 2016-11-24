@@ -31,7 +31,7 @@ namespace cryptox { namespace detail {
 	};
 }}
 
-// TODO: Move.
+// TODO: REVIEW: Should these stay here?
 namespace cryptox {
 	typedef detail::message_digest_traits<EVP_md2,    128> md2;
 	typedef detail::message_digest_traits<EVP_md5,    128> md5;

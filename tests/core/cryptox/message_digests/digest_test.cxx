@@ -10,8 +10,8 @@
 // [===========================================================================]
 
 #include "pch.hxx"
-#include <cryptox/message_digests/message_digester.hxx>
+#include <cryptox/message_digests/digest.hxx>
+using namespace cryptox;
 
 // No specific binary tests done here. Instead we safely delegate them to
-// hash<>'s internal tests, which depend on digest<>, which depends on
-// message_digester<>.
+// hash<>'s internal tests, which depend on digest<>().
