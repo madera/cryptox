@@ -10,7 +10,9 @@
 // [===========================================================================]
 
 #pragma once
+#include "../exceptions.hxx"
 #include "detail/message_digest_traits.hxx"
+#include <boost/exception/exception.hpp>
 #include <boost/noncopyable.hpp>
 #include <array>
 
@@ -27,15 +29,15 @@ namespace cryptox {
 				throw std::bad_alloc();
 
 			if (EVP_DigestInit_ex(_context, Algorithm::evp_md(), NULL) == 0)
-				throw std::runtime_error("TBD: Exception000");
+				BOOST_THROW_EXCEPTION(evp_error());
 		}
 
-	#if 0 // C++11
+#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
 		message_digester(message_digest&& other) {
 			_context = other._context;
 			other._context = nullptr;
 		}
-	#endif
+#endif
 
 		~message_digester() {
 			if (_context)
@@ -45,16 +47,14 @@ namespace cryptox {
 		template <typename Byte>
 		this_type& update(const Byte* data, const size_t size) {
 			if (EVP_DigestUpdate(_context, (const std::uint8_t*)data, size) != 1)
-				throw std::runtime_error("TBD: Exception001");
+				BOOST_THROW_EXCEPTION(evp_error());
 			return *this;
 		}
-
-		// TODO: update() for containers.
 
 		digest_type digest() {
 			digest_type result;
 			if (EVP_DigestFinal_ex(_context, result.data(), 0) == 0)
-				throw std::runtime_error("TBD: Exception002");
+				BOOST_THROW_EXCEPTION(evp_error());
 			return result;
 		}
 
