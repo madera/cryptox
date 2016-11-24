@@ -18,3 +18,5 @@ project(cryptox CXX)
 
 include_directories(include)
 add_subdirectory(tests)
+
+install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
