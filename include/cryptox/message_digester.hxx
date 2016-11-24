@@ -16,17 +16,17 @@
 
 namespace cryptox {
 
-	template <class Digest>
+	template <class Algorithm>
 	struct message_digester : boost::noncopyable {
 		typedef message_digester this_type;
-		typedef typename Digest::digest_type digest_type;
+		typedef typename Algorithm::digest_type digest_type;
 	public:
 		message_digester() {
 			_context = EVP_MD_CTX_create();
 			if (!_context)
 				throw std::bad_alloc();
 
-			if (EVP_DigestInit_ex(_context, Digest::evp_message_digest()(), NULL) == 0)
+			if (EVP_DigestInit_ex(_context, Algorithm::evp_md(), NULL) == 0)
 				throw std::runtime_error("TBD: Exception000");
 		}
 
@@ -62,4 +62,12 @@ namespace cryptox {
 		EVP_MD_CTX* _context;
 	};
 
+	// TODO: Move
+/*	template <class Algorithm>
+	typename Algorithm::digest_type digest(const char* data) {
+		message_digester<Algorithm> digester;
+		digester.update(data.c_str(), data.size());
+		return hex_string(digester.digest());
+	}
+*/
 }
