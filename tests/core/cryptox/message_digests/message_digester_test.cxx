@@ -10,7 +10,7 @@
 // [===========================================================================]
 
 #include "pch.hxx"
-#include <cryptox/message_digester.hxx>
+#include <cryptox/message_digests/message_digester.hxx>
 #include <cryptox/hex_string.hxx>
 
 BOOST_AUTO_TEST_CASE(evp_registry_test) {

@@ -10,7 +10,7 @@
 // [===========================================================================]
 
 #include "pch.hxx"
-#include <cryptox/hash.hxx>
+#include <cryptox/message_digests/hash.hxx>
 using namespace cryptox;
 
 BOOST_AUTO_TEST_CASE(md2_hash_test) {

@@ -11,7 +11,7 @@
 
 #pragma once
 #include "message_digester.hxx"
-#include "hex_string.hxx"
+#include "../hex_string.hxx"
 #include <string>
 
 namespace cryptox {
