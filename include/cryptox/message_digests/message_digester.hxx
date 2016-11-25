@@ -44,9 +44,8 @@ namespace cryptox {
 				EVP_MD_CTX_destroy(_context);
 		}
 
-		template <typename Byte>
-		this_type& update(const Byte* data, const size_t size) {
-			if (EVP_DigestUpdate(_context, (const std::uint8_t*)data, size) != 1)
+		this_type& update(const std::uint8_t* data, const size_t size) {
+			if (EVP_DigestUpdate(_context, data, size) != 1)
 				BOOST_THROW_EXCEPTION(evp_error());
 			return *this;
 		}
