@@ -10,6 +10,7 @@
 // [===========================================================================]
 
 #pragma once
+#include <boost/mpl/bool.hpp>
 
 // TODO: Substitute with Boost's recent solution: Boost TTI.
 #define DEFINE_HAS_MEMBER_TRAIT(name) \

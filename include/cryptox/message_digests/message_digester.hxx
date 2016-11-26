@@ -10,18 +10,93 @@
 // [===========================================================================]
 
 #pragma once
+#include "../detail/is_container.hxx"
 #include "../exceptions.hxx"
 #include "detail/message_digest_traits.hxx"
 #include <boost/exception/exception.hpp>
 #include <boost/noncopyable.hpp>
-#include <array>
+#include <boost/range/begin.hpp>
+#include <boost/range/end.hpp>
 
 namespace cryptox {
+
+	namespace detail {
+
+		template <class T, class Enabled = void>
+		class updater;
+
+		template <class T>
+		class updater<T, typename boost::enable_if_c<sizeof(T) == 1>::type> {
+			EVP_MD_CTX* _context;
+		public:
+			updater(EVP_MD_CTX* context)
+			 : _context(context) {}
+
+			void operator()(const T* data, const size_t size) const {
+				if (EVP_DigestUpdate(_context, (const std::uint8_t*)data, size) != 1)
+					BOOST_THROW_EXCEPTION(evp_error());
+			}
+		};
+
+		template <>
+		class updater<const char*> {
+			EVP_MD_CTX* _context;
+		public:
+			updater(EVP_MD_CTX* context)
+			 : _context(context) {}
+
+			void operator()(const char* c_string) const {
+				if (EVP_DigestUpdate(_context, (const std::uint8_t*)c_string, strlen(c_string)) != 1)
+					BOOST_THROW_EXCEPTION(evp_error());
+			}
+		};
+
+		template <typename InputIterator>
+		class updater<InputIterator, typename boost::enable_if_c<sizeof(typename InputIterator::value_type) == 1>::type> {
+			static const size_t read_buffer_size = 8192;
+			EVP_MD_CTX* _context;
+		public:
+			updater(EVP_MD_CTX* context)
+			 : _context(context) {}
+
+			void operator()(InputIterator begin, InputIterator end) const {
+				std::uint8_t buffer[read_buffer_size];
+				while (begin != end) {
+					int i = 0;
+					for ( ; begin != end && i<sizeof(buffer); ++i)
+						buffer[i] = *begin++;
+
+					if (EVP_DigestUpdate(_context, buffer, i) != 1)
+						BOOST_THROW_EXCEPTION(evp_error());
+				}
+			}
+		};
+
+		template <typename Container>
+		class updater<Container, typename boost::enable_if<
+			detail::is_container<Container>
+		>::type> {
+			EVP_MD_CTX* _context;
+		public:
+			updater(EVP_MD_CTX* context)
+			 : _context(context) {}
+
+			void operator()(const Container& container) const {
+				updater<typename Container::const_iterator>(_context)(
+					boost::begin(container),
+					boost::end(container)
+				);
+			}
+		};
+
+	}
 
 	template <class Algorithm>
 	struct message_digester : boost::noncopyable {
 		typedef message_digester this_type;
 		typedef typename Algorithm::digest_type digest_type;
+
+		static const size_t read_buffer_size = 8192;
 
 		message_digester() {
 			_context = EVP_MD_CTX_create();
@@ -44,17 +119,56 @@ namespace cryptox {
 				EVP_MD_CTX_destroy(_context);
 		}
 
-		this_type& update(const std::uint8_t* data, const size_t size) {
-			if (EVP_DigestUpdate(_context, data, size) != 1)
-				BOOST_THROW_EXCEPTION(evp_error());
-			return *this;
-		}
-
 		digest_type digest() {
 			digest_type result;
 			if (EVP_DigestFinal_ex(_context, result.data(), 0) == 0)
 				BOOST_THROW_EXCEPTION(evp_error());
 			return result;
+		}
+
+		this_type& operator()(const char* c_string) {
+			//(detail::updater<const char*>(_context))(c_string);
+			if (EVP_DigestUpdate(_context, (const std::uint8_t*)c_string, strlen(c_string)) != 1)
+				BOOST_THROW_EXCEPTION(evp_error());
+			return *this;
+		}
+
+		template <typename T>
+		typename boost::enable_if_c<
+			sizeof(T) == 1,
+			this_type&
+		>::type
+		operator()(const T* data, const size_t size) {
+			if (EVP_DigestUpdate(_context, (const std::uint8_t*)data, size) != 1)
+				BOOST_THROW_EXCEPTION(evp_error());
+			return *this;
+		}
+
+		template <typename InputIterator>
+		typename boost::enable_if_c<
+			sizeof(typename InputIterator::value_type) == 1,
+			this_type&
+		>::type
+		operator()(InputIterator begin, InputIterator end) {
+			std::uint8_t buffer[read_buffer_size];
+			while (begin != end) {
+				int i = 0;
+				for ( ; begin != end && i<sizeof(buffer); ++i)
+					buffer[i] = *begin++;
+
+				(*this)(buffer, i);
+			}
+
+			return *this;
+		}
+
+		template <typename Container>
+		typename boost::enable_if<detail::is_container<Container> >::type
+		operator()(const Container& container) {
+			return (*this)(
+				boost::begin(container),
+				boost::end(container)
+			);
 		}
 
 	private:

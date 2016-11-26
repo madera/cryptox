@@ -10,29 +10,27 @@
 // [===========================================================================]
 
 #pragma once
-#include "digest.hxx"
-#include "../hex_string.hxx"
+#include "has_member_trait.hxx"
+#include <boost/type_traits/is_pod.hpp>
+#include <boost/utility/enable_if.hpp>
+#include <boost/mpl/if.hpp>
 
 namespace cryptox {
 
-	template <class Algorithm>
-	std::string hash(const char* c_string) {
-		return hex_string(digest<Algorithm>(c_string, strlen(c_string)));
-	}
+	namespace detail {
 
-	template <class Algorithm, typename T>
-	std::string hash(const T* data, const size_t size) {
-		return hex_string(digest<Algorithm>(data, size));
-	}
+		DEFINE_HAS_MEMBER_TRAIT(begin)
+		DEFINE_HAS_MEMBER_TRAIT(end)
+		DEFINE_HAS_NESTED_TYPE(const_iterator)
 
-	template <class Algorithm, typename InputIterator>
-	std::string hash(InputIterator begin, InputIterator end) {
-		return hex_string(digest<Algorithm>(begin, end));
-	}
+		template <class T>
+		struct is_container : boost::mpl::and_<
+			boost::mpl::not_<boost::is_pod<T> >,
+			has_member_begin<T>,
+			has_member_end<T>,
+			has_nested_type_const_iterator<T>
+		> {};
 
-	template <class Algorithm, typename Container>
-	std::string hash(const Container& container) {
-		return hex_string(digest<Algorithm>(container));
 	}
 
 }

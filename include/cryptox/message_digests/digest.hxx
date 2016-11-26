@@ -10,30 +10,17 @@
 // [===========================================================================]
 
 #pragma once
-#include "../detail/has_member_trait.hxx"
 #include "message_digester.hxx"
-#include <boost/range/begin.hpp>
-#include <boost/range/end.hpp>
-#include <boost/utility/enable_if.hpp>
-#include <boost/mpl/and.hpp>
-
-#define CRYPTOX_READ_BUFFER_SIZE 8192
+#include <boost/mpl/or.hpp>
 
 namespace cryptox {
 
-	namespace detail {
-
-		DEFINE_HAS_MEMBER_TRAIT(begin)
-		DEFINE_HAS_MEMBER_TRAIT(end)
-		DEFINE_HAS_NESTED_TYPE(const_iterator)
-
-		template <class T>
-		struct is_container : public boost::mpl::and_<
-			has_member_begin<T>,
-			has_member_end<T>,
-			has_nested_type_const_iterator<T>
-		> {};
-
+	template <class Algorithm>
+	typename Algorithm::digest_type
+	digest(const char* c_string) {
+		message_digester<Algorithm> digester;
+		digester(c_string);
+		return digester.digest();
 	}
 
 	template <class Algorithm, typename T>
@@ -43,7 +30,7 @@ namespace cryptox {
 	>::type
 	digest(const T* data, const size_t size) {
 		message_digester<Algorithm> digester;
-		digester.update((const std::uint8_t*)data, size);
+		digester(data, size);
 		return digester.digest();
 	}
 
@@ -54,16 +41,7 @@ namespace cryptox {
 	>::type
 	digest(InputIterator begin, InputIterator end) {
 		message_digester<Algorithm> digester;
-		std::uint8_t buffer[CRYPTOX_READ_BUFFER_SIZE];
-
-		while (begin != end) {
-			int i = 0;
-			for ( ; begin != end && i<sizeof(buffer); ++i)
-				buffer[i] = *begin++;
-
-			digester.update(buffer, i);
-		}
-
+		digester(begin, end);
 		return digester.digest();
 	}
 
