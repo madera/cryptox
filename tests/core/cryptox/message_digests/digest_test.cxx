@@ -18,8 +18,8 @@ static const std::string lazy_dog = "The quick brown fox jumps over the lazy dog
 
 #define CHECK_DIGEST(algorithm, input, expected) \
 	BOOST_CHECK(digest<algorithm>(&input[0], input.size()) == expected); \
+	BOOST_CHECK(digest<algorithm>(input.begin(), input.end()) == expected); \
 	BOOST_CHECK(digest<algorithm>(input) == expected);
-//	BOOST_CHECK(digest<algorithm>(input.begin(), input.end()) == expected); \
 
 BOOST_AUTO_TEST_CASE(md2_digest_test) {
 	{

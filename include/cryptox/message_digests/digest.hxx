@@ -11,9 +11,13 @@
 
 #pragma once
 #include "../detail/has_member_trait.hxx"
-#include <boost/mpl/and.hpp>
 #include "message_digester.hxx"
+#include <boost/range/begin.hpp>
+#include <boost/range/end.hpp>
 #include <boost/utility/enable_if.hpp>
+#include <boost/mpl/and.hpp>
+
+#define CRYPTOX_READ_BUFFER_SIZE 8192
 
 namespace cryptox {
 
@@ -49,8 +53,18 @@ namespace cryptox {
 		typename Algorithm::digest_type
 	>::type
 	digest(InputIterator begin, InputIterator end) {
-		// TODO: Read data sequentially.
-		return typename Algorithm::digest_type();
+		message_digester<Algorithm> digester;
+		std::uint8_t buffer[CRYPTOX_READ_BUFFER_SIZE];
+
+		while (begin != end) {
+			int i = 0;
+			for ( ; begin != end && i<sizeof(buffer); ++i)
+				buffer[i] = *begin++;
+
+			digester.update(buffer, i);
+		}
+
+		return digester.digest();
 	}
 
 	template <class Algorithm, typename Container>
@@ -59,9 +73,10 @@ namespace cryptox {
 		typename Algorithm::digest_type
 	>::type
 	digest(const Container& container) {
-		message_digester<Algorithm> digester;
-		digester.update((const std::uint8_t*)&container[0], container.size());
-		return digester.digest();
+		return digest<Algorithm>(
+			boost::begin(container),
+			boost::end(container)
+		);
 	}
 
 }
