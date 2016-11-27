@@ -91,7 +91,7 @@ For now, only Message Digest code has been uploaded.
 
 # License
 
-The chosen library is one of the most permissive licenses in the C++ world: the Boost Software License. Feel free to use the library, but do your best to contribute to make it better for other people to use as well.
+The chosen license is one of the most permissive ones in the C++ world: the Boost Software License. Feel free to use the library, but do your best to contribute to make it better for other people to use as it well.
 
 ### Boost Software License - Version 1.0 - August 17th, 2003
 
