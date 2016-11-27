@@ -60,9 +60,9 @@ All the overloads of the previous example apply.
 
 [Message Digests](https://en.wikipedia.org/wiki/Cryptographic_hash_function) are implemented using cryptox::message_digester\<Algorithm\>, which is a class template that takes the desired hashing algorithm as a parameter. However, there are two high-level functions that ease most use cases.
 
-A Message Digest is defined as a function that reduces a given input to a fixed width binary value, called the Digest, or more commonly, the hash.
+A Message Digest is defined as a function that reduces a given input to a fixed width binary value, called the Digest, or more commonly, the Hash.
 
-For the purposes of simplification, this library uses digest for binary values, and hash for textual hexadecimal representations.
+For the purposes of simplification, this library uses the words *digest* for binary values, and *hash* for textual hexadecimal representations of the digest. However, they have the same meaning in academic publishing.
 
 #### High-level API
 
@@ -82,8 +82,14 @@ The hash algorithms that are wrapped are from OpenSSL EVP. At the moment, these 
 |     sha384    |        384        |
 |     sha512    |        512        |
 
+### Symmetric Encryption
+
+In the works on a private branch.
+
 ## History
 During almost two decades of professional software development I've created wrappers and code utilities that have been copied and pasted on my projects over and over. I'm putting them (rather slowly) into public repositories to help me organize my code and also to see if it helps other developers. As an added bonus, people can contribute and make the library better.
+
+For now, only Message Digest code has been uploaded.
 
 # License
 
