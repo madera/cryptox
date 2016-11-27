@@ -55,7 +55,7 @@ All the overloads of the previous example apply.
 ## The API
 
 ### Quick Note
-Please note that there is no API documentation at the moment. It's on the list, but not yet done. Take a look at the test code to understand the API. Every important API use function has at least one test case.
+Please note that there is no API documentation at the moment. It's on the list, but not done yet. Take a look at the test code to understand the API. Every important user API function has at least one test case.
 
 ### Message Digests
 
