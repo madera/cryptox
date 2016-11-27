@@ -38,7 +38,7 @@ namespace cryptox {
 		}
 
 #ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
-		message_digester(message_digest&& other) {
+		message_digester(this_type&& other) {
 			_context = other._context;
 			other._context = nullptr;
 		}
@@ -50,7 +50,6 @@ namespace cryptox {
 		}
 
 		this_type& update(const char* c_string) {
-			//(detail::updater<const char*>(_context))(c_string);
 			if (EVP_DigestUpdate(_context, (const std::uint8_t*)c_string, strlen(c_string)) != 1)
 				BOOST_THROW_EXCEPTION(evp_error());
 			return *this;
