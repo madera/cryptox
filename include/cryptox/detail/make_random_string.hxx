@@ -1,5 +1,5 @@
 // [===========================================================================]
-// [                               S p l o t c h                               ]
+// [                               C r y p t o x                               ]
 // [---------------------------------------------------------------------------]
 // [                                                                           ]
 // [                          Copyright (C) 2016-2017                          ]
@@ -22,9 +22,9 @@ namespace cryptox {
 			const char alphabet[] = "abcdefghijklmnopqrstuvwxyz0123456789";
 			const size_t alphabet_size = sizeof(alphabet) - 1;
 
-			std::string result(chars, ' ');
-			for (char& c : result)
-				c = alphabet[rand()%alphabet_size];
+			std::string result;
+			for (int i=0; i<size; ++i)
+				result.push_back(alphabet[rand()%alphabet_size]);
 
 			return result;
 		}
