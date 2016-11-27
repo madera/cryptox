@@ -54,6 +54,9 @@ All the overloads of the previous example apply.
 
 ## The API
 
+### Quick Note
+Please note that there is no API documentation at the moment. It's on the list, but not yet done. Take a look at the test code to understand the API. Every important API use function has at least one test case.
+
 ### Message Digests
 
 [Message Digests](https://en.wikipedia.org/wiki/Cryptographic_hash_function) are implemented using cryptox::message_digester\<Algorithm\>, which is a class template that takes the desired hashing algorithm as a parameter. However, there are two high-level functions that ease most use cases.
