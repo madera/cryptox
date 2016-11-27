@@ -12,6 +12,8 @@
 
 #include "pch.hxx"
 #include <cryptox/message_digests/hash.hxx>
+#include <cryptox/detail/make_random_string.hxx>
+#include <cryptox/detail/ifstream_size.hxx>
 #include <vector>
 #include <string>
 using namespace cryptox;
@@ -73,14 +75,42 @@ BOOST_AUTO_TEST_CASE(sha512_hash_test) {
 					   "2e93a252a954f23912547d1e8a3b5ed6e1bfd7097821233fa0538f3db854fee6");
 }
 
+
+BOOST_AUTO_TEST_CASE(simple_ifstream_test) {
+	const std::string filename = detail::make_random_string();
+
+	/* Create temporary file */ {
+		std::ofstream output_file(filename);
+		if (!output_file)
+			throw std::runtime_error("Failed to create file for tests.");
+
+		output_file << lazy_dog;
+		output_file.close();
+	}
+
+	/* Digest the file */ {
+		std::ifstream input_file(filename);
+		if (!input_file)
+			throw std::runtime_error("Failed to open test file.");
+
+		const char* expected = "07e547d9586f6a73f73fbac0435ed76951218fb7d0c8d788a309d785436bbb64"
+				       "2e93a252a954f23912547d1e8a3b5ed6e1bfd7097821233fa0538f3db854fee6";
+
+		BOOST_CHECK_EQUAL(hash<sha512>(input_file), expected);
+		input_file.close();
+
+		std::remove(filename.c_str());
+	}
+}
+
 BOOST_AUTO_TEST_CASE(hasher_test) {
 	std::vector<std::string> input;
 	input.push_back(empty_string);
 	input.push_back(lazy_dog);
 
 	std::vector<std::string> expected;
-	expected.push_back("d41d8cd98f00b204e9800998ecf8427e");
-	expected.push_back("9e107d9d372bb6826bd81d3542a419d6");
+	expected.push_back("d41d8cd98f00b204e9800998ecf8427e"); // MD5 for empty_string.
+	expected.push_back("9e107d9d372bb6826bd81d3542a419d6"); // MD5 for lazy_dog.
 
 	std::vector<std::string> hashes;
 	std::transform(input.begin(), input.end(), std::back_inserter(hashes), hasher<md5>());

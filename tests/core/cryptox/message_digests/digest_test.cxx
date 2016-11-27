@@ -12,6 +12,8 @@
 
 #include "pch.hxx"
 #include <cryptox/message_digests/digest.hxx>
+#include <cryptox/detail/make_random_string.hxx>
+#include <cryptox/detail/ifstream_size.hxx>
 using namespace cryptox;
 
 static const std::string empty_string;
@@ -204,5 +206,78 @@ BOOST_AUTO_TEST_CASE(sha512_digest_test) {
 		}};
 
 		CHECK_DIGEST(sha512, lazy_dog, expected);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(simple_ifstream_digest_test) {
+	const std::string filename = detail::make_random_string();
+
+	/* Create temporary file */ {
+		std::ofstream output_file(filename);
+		if (!output_file)
+			throw std::runtime_error("Failed to create file for tests.");
+
+		output_file << lazy_dog;
+		output_file.close();
+	}
+
+	/* Digest the file */ {
+		std::ifstream input_file(filename);
+		if (!input_file)
+			throw std::runtime_error("Failed to open test file.");
+
+		const sha512::digest_type expected = {{
+			0x07, 0xe5, 0x47, 0xd9, 0x58, 0x6f, 0x6a, 0x73,
+			0xf7, 0x3f, 0xba, 0xc0, 0x43, 0x5e, 0xd7, 0x69,
+			0x51, 0x21, 0x8f, 0xb7, 0xd0, 0xc8, 0xd7, 0x88,
+			0xa3, 0x09, 0xd7, 0x85, 0x43, 0x6b, 0xbb, 0x64,
+			0x2e, 0x93, 0xa2, 0x52, 0xa9, 0x54, 0xf2, 0x39,
+			0x12, 0x54, 0x7d, 0x1e, 0x8a, 0x3b, 0x5e, 0xd6,
+			0xe1, 0xbf, 0xd7, 0x09, 0x78, 0x21, 0x23, 0x3f,
+			0xa0, 0x53, 0x8f, 0x3d, 0xb8, 0x54, 0xfe, 0xe6
+		}};
+
+		BOOST_CHECK(digest<sha512>(input_file) == expected);
+		input_file.close();
+
+		std::remove(filename.c_str());
+	}
+}
+
+BOOST_AUTO_TEST_CASE(blob_ifstream_digest_test) {
+	int repetitions = 8;
+	while (repetitions--) {
+		const size_t blob_size = 32*1024*1024;
+
+		const std::string filename = detail::make_random_string();
+		std::vector<std::ofstream::char_type> v(blob_size);
+
+		/* Create temporary file */ {
+			std::ofstream output_file(filename);
+			if (!output_file)
+				throw std::runtime_error("Failed to create file for tests.");
+
+			for (int i=0; i<v.size(); ++i)
+				v[i] = rand()%255;
+
+			if (!output_file.write(&v[0], v.size()))
+				throw std::runtime_error("Failed to write test file.");
+
+			output_file.close();
+		}
+
+		/* Digest the file */ {
+			std::ifstream input_file(filename);
+			const size_t file_size = detail::ifstream_size(input_file);
+			if (!input_file)
+				throw std::runtime_error("Failed to open test file.");
+
+			const sha512::digest_type expected = digest<sha512>(v);
+
+			BOOST_CHECK(digest<sha512>(input_file) == expected);
+			input_file.close();
+
+			std::remove(filename.c_str());
+		}
 	}
 }

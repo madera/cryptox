@@ -15,9 +15,14 @@
 #include "../exceptions.hxx"
 #include "detail/message_digest_traits.hxx"
 #include <boost/exception/exception.hpp>
+#include <boost/optional.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
+
+#ifndef CRYPTOX_NO_IFSTREAM
+#include <fstream>
+#endif
 
 namespace cryptox {
 
@@ -26,7 +31,7 @@ namespace cryptox {
 		typedef message_digester this_type;
 		typedef typename Algorithm::digest_type digest_type;
 
-		static const size_t read_buffer_size = 8192;
+		static const size_t read_buffer_size = 64*1024;
 
 		message_digester() {
 			_context = EVP_MD_CTX_create();
@@ -93,6 +98,24 @@ namespace cryptox {
 				boost::begin(container),
 				boost::end(container)
 			);
+		}
+
+		this_type& update(std::ifstream& file, boost::optional<size_t> max = boost::none) {
+			std::ifstream::char_type buffer[read_buffer_size];
+
+			size_t total_read = 0;
+			size_t current_read = 0;
+
+			do {
+				file.read(buffer, sizeof(buffer));
+				current_read = file.gcount();
+				if (current_read > 0) {
+					update(buffer, current_read);
+					total_read += current_read;
+				}
+			} while (current_read > 0 && file);
+
+			return *this;
 		}
 
 		digest_type digest() {

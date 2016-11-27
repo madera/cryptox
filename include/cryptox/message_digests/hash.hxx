@@ -37,6 +37,11 @@ namespace cryptox {
 	}
 
 	template <class Algorithm>
+	std::string hash(std::ifstream& input) {
+		return hex_string(digest<Algorithm>(input));
+	}
+
+	template <class Algorithm>
 	struct hasher {
 		template <typename T>
 		std::string operator()(const T& x) const {

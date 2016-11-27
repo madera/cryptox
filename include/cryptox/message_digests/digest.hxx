@@ -58,4 +58,12 @@ namespace cryptox {
 		);
 	}
 
+	template <class Algorithm>
+	typename Algorithm::digest_type
+	digest(std::ifstream& file) {
+		message_digester<Algorithm> digester;
+		digester.update(file);
+		return digester.digest();
+	}
+
 }
