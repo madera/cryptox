@@ -19,7 +19,7 @@ namespace cryptox {
 	typename Algorithm::digest_type
 	digest(const char* c_string) {
 		message_digester<Algorithm> digester;
-		digester(c_string);
+		digester.update(c_string);
 		return digester.digest();
 	}
 
@@ -30,7 +30,7 @@ namespace cryptox {
 	>::type
 	digest(const T* data, const size_t size) {
 		message_digester<Algorithm> digester;
-		digester(data, size);
+		digester.update(data, size);
 		return digester.digest();
 	}
 
@@ -41,7 +41,7 @@ namespace cryptox {
 	>::type
 	digest(InputIterator begin, InputIterator end) {
 		message_digester<Algorithm> digester;
-		digester(begin, end);
+		digester.update(begin, end);
 		return digester.digest();
 	}
 

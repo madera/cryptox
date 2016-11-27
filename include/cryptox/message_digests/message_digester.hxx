@@ -48,14 +48,7 @@ namespace cryptox {
 				EVP_MD_CTX_destroy(_context);
 		}
 
-		digest_type digest() {
-			digest_type result;
-			if (EVP_DigestFinal_ex(_context, result.data(), 0) == 0)
-				BOOST_THROW_EXCEPTION(evp_error());
-			return result;
-		}
-
-		this_type& operator()(const char* c_string) {
+		this_type& update(const char* c_string) {
 			//(detail::updater<const char*>(_context))(c_string);
 			if (EVP_DigestUpdate(_context, (const std::uint8_t*)c_string, strlen(c_string)) != 1)
 				BOOST_THROW_EXCEPTION(evp_error());
@@ -67,7 +60,7 @@ namespace cryptox {
 			sizeof(T) == 1,
 			this_type&
 		>::type
-		operator()(const T* data, const size_t size) {
+		update(const T* data, const size_t size) {
 			if (EVP_DigestUpdate(_context, (const std::uint8_t*)data, size) != 1)
 				BOOST_THROW_EXCEPTION(evp_error());
 			return *this;
@@ -78,26 +71,35 @@ namespace cryptox {
 			sizeof(typename InputIterator::value_type) == 1,
 			this_type&
 		>::type
-		operator()(InputIterator begin, InputIterator end) {
+		update(InputIterator begin, InputIterator end) {
 			std::uint8_t buffer[read_buffer_size];
 			while (begin != end) {
 				int i = 0;
 				for ( ; begin != end && i<sizeof(buffer); ++i)
 					buffer[i] = *begin++;
 
-				(*this)(buffer, i);
+				update(buffer, i);
 			}
 
 			return *this;
 		}
 
 		template <typename Container>
-		typename boost::enable_if<detail::is_container<Container> >::type
-		operator()(const Container& container) {
+		typename boost::enable_if<
+			detail::is_container<Container>
+		>::type
+		update(const Container& container) {
 			return (*this)(
 				boost::begin(container),
 				boost::end(container)
 			);
+		}
+
+		digest_type digest() {
+			digest_type result;
+			if (EVP_DigestFinal_ex(_context, result.data(), 0) == 0)
+				BOOST_THROW_EXCEPTION(evp_error());
+			return result;
 		}
 
 	private:
