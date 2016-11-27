@@ -18,6 +18,7 @@ add_executable(core_tests
 	cryptox/message_digests/message_digester_test.cxx
 	cryptox/message_digests/digest_test.cxx
 	cryptox/message_digests/hash_test.cxx
+	cryptox/message_digests/detail/message_digest_traits_test.cxx
 )
 
 target_link_libraries(

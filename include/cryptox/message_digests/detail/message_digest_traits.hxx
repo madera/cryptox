@@ -15,33 +15,36 @@
 #include <boost/array.hpp>
 #include <boost/static_assert.hpp>
 
-namespace cryptox { namespace detail {
-
-	typedef const EVP_MD* (*evp_message_digest_fx_t)();
-
-	template <evp_message_digest_fx_t Digest, int Bits>
-	struct message_digest_traits {
-		BOOST_STATIC_ASSERT(Bits%8 == 0);
-		enum { digest_size = Bits/8 };
-
-		typedef boost::array<std::uint8_t, digest_size> digest_type;
-
-		static const EVP_MD* evp_md() {
-			return Digest();
-		}
+#define CRYPTOX_MESSAGE_DIGEST(algorithm, algorithm_bits, algorithm_name) \
+	struct algorithm { \
+		BOOST_STATIC_ASSERT(algorithm_bits%8 == 0); \
+		\
+		enum { digest_size = algorithm_bits/8 }; \
+		\
+		typedef boost::array<std::uint8_t, digest_size> digest_type; \
+		\
+		static const int bits() { \
+			return algorithm_bits; \
+		} \
+		static const EVP_MD* evp_md() { \
+			return EVP_##algorithm(); \
+		} \
+		\
+		static const char* name() { \
+			return algorithm_name; \
+		} \
 	};
-}}
 
 // TODO: REVIEW: Should these stay here?
 namespace cryptox {
-	typedef detail::message_digest_traits<EVP_md2,    128> md2;
-	typedef detail::message_digest_traits<EVP_md5,    128> md5;
-	typedef detail::message_digest_traits<EVP_sha,    160> sha;
-	typedef detail::message_digest_traits<EVP_sha1,   160> sha1;
-	typedef detail::message_digest_traits<EVP_sha224, 224> sha224;
-	typedef detail::message_digest_traits<EVP_sha256, 256> sha256;
-	typedef detail::message_digest_traits<EVP_sha384, 384> sha384;
-	typedef detail::message_digest_traits<EVP_sha512, 512> sha512;
+	CRYPTOX_MESSAGE_DIGEST(md2   , 128, "MD2"    );
+	CRYPTOX_MESSAGE_DIGEST(md5   , 128, "MD5"    );
+	CRYPTOX_MESSAGE_DIGEST(sha   , 160, "SHA"    );
+	CRYPTOX_MESSAGE_DIGEST(sha1  , 160, "SHA-1"  );
+	CRYPTOX_MESSAGE_DIGEST(sha224, 224, "SHA-224");
+	CRYPTOX_MESSAGE_DIGEST(sha256, 256, "SHA-256");
+	CRYPTOX_MESSAGE_DIGEST(sha384, 384, "SHA-384");
+	CRYPTOX_MESSAGE_DIGEST(sha512, 512, "SHA-512");
 // TODO: EVP_mdc2
 // TODO: EVP_ripemd160
 }
