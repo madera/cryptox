@@ -8,7 +8,7 @@ A simple header-only C++ OpenSSL Wrapper for C++03 and up.
 
 In order to simplify examples we assume these two lines at the top of all snippets:
 
-```
+``` c++
 #include <cryptox/message_digests/hash.hxx>
 using namespace cryptox;
 ```
@@ -19,27 +19,27 @@ using namespace cryptox;
 
 Hashing a C string:
 
-```
+``` c++
 std::string as_string = hash<md5>("Hello world!");
 ```
 
 Hashing bytes:
 
-```
+``` c++
 char buffer[] = { 0x00, 0x10, 0x20, 0x30 };
 std::string as_string = hash<sha1>(buffer, sizeof(buffer));
 ```
 
 Hash range of values:
 
-```
+``` c++
 std::vector<char> v = ...
 std::string as_string = hash<sha256>(v.begin(), v.end());
 ```
 
 Or a container at once:
 
-```
+``` c++
 std::vector<char> v = ...
 std::string as_string = hash<sha512>(v);
 ```
@@ -48,7 +48,7 @@ std::string as_string = hash<sha512>(v);
 
 Hashing a C string:
 
-```
+``` c++
 md5::digest_type as_bytes = digest<md5>("Hello world!");
 ```
 
