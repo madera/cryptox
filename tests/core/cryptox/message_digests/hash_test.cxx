@@ -11,6 +11,8 @@
 
 #include "pch.hxx"
 #include <cryptox/message_digests/hash.hxx>
+#include <vector>
+#include <string>
 using namespace cryptox;
 
 static const std::string empty_string;
@@ -68,4 +70,19 @@ BOOST_AUTO_TEST_CASE(sha512_hash_test) {
 					   "47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
 	CHECK_DIGEST(sha512, lazy_dog,     "07e547d9586f6a73f73fbac0435ed76951218fb7d0c8d788a309d785436bbb64"
 					   "2e93a252a954f23912547d1e8a3b5ed6e1bfd7097821233fa0538f3db854fee6");
+}
+
+BOOST_AUTO_TEST_CASE(hasher_test) {
+	std::vector<std::string> input;
+	input.push_back(empty_string);
+	input.push_back(lazy_dog);
+
+	std::vector<std::string> expected;
+	expected.push_back("d41d8cd98f00b204e9800998ecf8427e");
+	expected.push_back("9e107d9d372bb6826bd81d3542a419d6");
+
+	std::vector<std::string> hashes;
+	std::transform(input.begin(), input.end(), std::back_inserter(hashes), hasher<md5>());
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(hashes.begin(), hashes.end(), expected.begin(), expected.end());
 }
