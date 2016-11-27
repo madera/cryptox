@@ -1,6 +1,4 @@
-# cryptox
-
-OpenSSL C++ Wrapper
+# cryptox :: OpenSSL C++ Wrapper
 
 A simple header-only C++ OpenSSL Wrapper for C++03 and up.
 
