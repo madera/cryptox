@@ -13,7 +13,7 @@ using namespace cryptox;
 
 ### Message Digests
 
-#### > Hash as a std::string
+#### > Digest as std::string
 
 Hashing a C string:
 
@@ -42,7 +42,7 @@ std::vector<char> v = ...
 std::string as_string = hash<sha512>(v);
 ```
 
-#### > Hash as a boost::array<>
+#### > Hash as boost::array<>
 
 Hashing a C string:
 
@@ -64,11 +64,11 @@ For the purposes of simplification, this library uses the words *digest* for bin
 
 #### High-level API
 
-Two high-level functions are provided to get hashes: one for binary results and one for a hexadecimal representation of it. That is, digest<Algorithm>() and hash<Algorithm>(), respectively.
+Two high-level functions are provided to get digests: one for binary results and one for a hexadecimal representation of it. That is, digest<Algorithm>() and hash<Algorithm>(), respectively.
 
-### Hash Algorithms
+### Digest Algorithms
 
-The hash algorithms that are wrapped are from OpenSSL EVP. At the moment, these are the available algorithms:
+The algorithms wrapped are from OpenSSL EVP. At the moment, these are the available options:
 
 | **Algorithm** | **Digest Length** |
 |:-------------:|:-----------------:|
@@ -91,7 +91,7 @@ For now, only Message Digest code has been uploaded.
 
 # License
 
-The chosen library is one of the most permissive licences in the C++ world: the Boost Software License. Feel free to use the library, but do your best to contribute to make it better for other people to use as well.
+The chosen library is one of the most permissive licenses in the C++ world: the Boost Software License. Feel free to use the library, but do your best to contribute to make it better for other people to use as well.
 
 ### Boost Software License - Version 1.0 - August 17th, 2003
 
