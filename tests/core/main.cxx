@@ -13,3 +13,10 @@
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 
+struct initialize_tests {
+	initialize_tests() {
+		srand(time(0));
+	}
+};
+
+BOOST_GLOBAL_FIXTURE(initialize_tests);
