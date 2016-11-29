@@ -11,7 +11,7 @@
 // [===========================================================================]
 
 #pragma once
-#include <openssl/evp.h>
+#include "../../detail/openssl.hxx"
 #include <boost/array.hpp>
 #include <boost/static_assert.hpp>
 
