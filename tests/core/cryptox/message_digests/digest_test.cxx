@@ -25,25 +25,6 @@ static const std::string lazy_dog = "The quick brown fox jumps over the lazy dog
 	BOOST_CHECK(digest<algorithm>(input.begin(), input.end()) == expected); \
 	BOOST_CHECK(digest<algorithm>(input) == expected);
 
-BOOST_AUTO_TEST_CASE(md2_digest_test) {
-	{
-		const md2::digest_type expected = {{
-			0x83, 0x50, 0xe5, 0xa3, 0xe2, 0x4c, 0x15, 0x3d,
-			0xf2, 0x27, 0x5c, 0x9f, 0x80, 0x69, 0x27, 0x73
-		}};
-
-		CHECK_DIGEST(md2, empty_string, expected);
-	}
-	{
-		const md2::digest_type expected = {{
-			0x03, 0xd8, 0x5a, 0x0d, 0x62, 0x9d, 0x2c, 0x44,
-			0x2e, 0x98, 0x75, 0x25, 0x31, 0x9f, 0xc4, 0x71
-		}};
-
-		CHECK_DIGEST(md2, lazy_dog, expected);
-	}
-}
-
 BOOST_AUTO_TEST_CASE(md5_digest_test) {
 	{
 		const md5::digest_type expected = {{

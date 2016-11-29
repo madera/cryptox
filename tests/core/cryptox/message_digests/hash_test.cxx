@@ -27,11 +27,6 @@ static const std::string lazy_dog = "The quick brown fox jumps over the lazy dog
 	BOOST_CHECK(hash<algorithm>(input.begin(), input.end()) == expected); \
 	BOOST_CHECK(hash<algorithm>(input) == expected);
 
-BOOST_AUTO_TEST_CASE(md2_hash_test) {
-	CHECK_DIGEST(md2, empty_string, "8350e5a3e24c153df2275c9f80692773");
-	CHECK_DIGEST(md2, lazy_dog,     "03d85a0d629d2c442e987525319fc471");
-}
-
 BOOST_AUTO_TEST_CASE(md5_hash_test) {
 	CHECK_DIGEST(md5, empty_string, "d41d8cd98f00b204e9800998ecf8427e");
 	CHECK_DIGEST(md5, lazy_dog,     "9e107d9d372bb6826bd81d3542a419d6");

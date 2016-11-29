@@ -19,7 +19,6 @@ using namespace cryptox;
 // message_digester<>.
 
 BOOST_AUTO_TEST_CASE(message_digest_traits_bits_test) {
-	BOOST_CHECK_EQUAL(md2   ::bits(), 128);
 	BOOST_CHECK_EQUAL(md5   ::bits(), 128);
 	BOOST_CHECK_EQUAL(sha   ::bits(), 160);
 	BOOST_CHECK_EQUAL(sha1  ::bits(), 160);
@@ -30,7 +29,6 @@ BOOST_AUTO_TEST_CASE(message_digest_traits_bits_test) {
 }
 
 BOOST_AUTO_TEST_CASE(message_digest_traits_names_test) {
-	BOOST_CHECK_EQUAL(std::string("MD2"    ), md2   ::name());
 	BOOST_CHECK_EQUAL(std::string("MD5"    ), md5   ::name());
 	BOOST_CHECK_EQUAL(std::string("SHA"    ), sha   ::name());
 	BOOST_CHECK_EQUAL(std::string("SHA-1"  ), sha1  ::name());

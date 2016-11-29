@@ -37,7 +37,6 @@
 
 // TODO: REVIEW: Should these stay here?
 namespace cryptox {
-	CRYPTOX_MESSAGE_DIGEST(md2   , 128, "MD2"    );
 	CRYPTOX_MESSAGE_DIGEST(md5   , 128, "MD5"    );
 	CRYPTOX_MESSAGE_DIGEST(sha   , 160, "SHA"    );
 	CRYPTOX_MESSAGE_DIGEST(sha1  , 160, "SHA-1"  );
