@@ -245,9 +245,9 @@ BOOST_AUTO_TEST_CASE(simple_ifstream_digest_test) {
 }
 
 BOOST_AUTO_TEST_CASE(blob_ifstream_digest_test) {
-	int repetitions = 8;
-	while (repetitions--) {
-		const size_t blob_size = 32*1024*1024;
+	int rounds = 2;
+	while (rounds--) {
+		const size_t blob_size = 1*1024*1024;
 
 		const std::string filename = detail::make_random_string();
 		std::vector<std::ofstream::char_type> v(blob_size);
