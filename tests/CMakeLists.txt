@@ -11,6 +11,7 @@
 # [===========================================================================]
 
 find_package(Boost COMPONENTS test_exec_monitor REQUIRED)
+find_package(OpenSSL REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++03")
 

@@ -23,8 +23,8 @@ add_executable(core_tests
 
 target_link_libraries(
 	core_tests
-	crypto
 	${Boost_LIBRARIES}
+	${OPENSSL_LIBRARIES}
 )
 
 add_test(core_tests core_tests)
