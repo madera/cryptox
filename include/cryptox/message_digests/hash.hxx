@@ -12,7 +12,7 @@
 
 #pragma once
 #include "digest.hxx"
-#include "../hex_string.hxx"
+#include "../detail/hex_string.hxx"
 
 namespace cryptox {
 
