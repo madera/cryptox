@@ -18,27 +18,27 @@ namespace cryptox {
 
 	template <class Algorithm>
 	std::string hash(const char* c_string) {
-		return hex_string(digest<Algorithm>(c_string, strlen(c_string)));
+		return detail::hex_string(digest<Algorithm>(c_string, strlen(c_string)));
 	}
 
 	template <class Algorithm, typename T>
 	std::string hash(const T* data, const size_t size) {
-		return hex_string(digest<Algorithm>(data, size));
+		return detail::hex_string(digest<Algorithm>(data, size));
 	}
 
 	template <class Algorithm, typename InputIterator>
 	std::string hash(InputIterator begin, InputIterator end) {
-		return hex_string(digest<Algorithm>(begin, end));
+		return detail::hex_string(digest<Algorithm>(begin, end));
 	}
 
 	template <class Algorithm, typename Container>
 	std::string hash(const Container& container) {
-		return hex_string(digest<Algorithm>(container));
+		return detail::hex_string(digest<Algorithm>(container));
 	}
 
 	template <class Algorithm>
 	std::string hash(std::ifstream& input) {
-		return hex_string(digest<Algorithm>(input));
+		return detail::hex_string(digest<Algorithm>(input));
 	}
 
 	template <class Algorithm>
