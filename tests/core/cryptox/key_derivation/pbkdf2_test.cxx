@@ -76,6 +76,10 @@ BOOST_AUTO_TEST_CASE(pbkdf2_rfc6070_test) {
 			0xcc, 0x37, 0xd7, 0xf0, 0x34, 0x25, 0xe0, 0xc3
 		}};
 
-		BOOST_CHECK((pbkdf2<sha1, 128>("pass\0word", 9, "sa\0lt", 5, 4096)) == expected);
+		BOOST_CHECK((pbkdf2<sha1, 128>(
+			memory_block("pass\0word", 9),
+			memory_block("sa\0lt", 5),
+			4096
+		)) == expected);
 	}
 }
