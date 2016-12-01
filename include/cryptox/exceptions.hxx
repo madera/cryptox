@@ -12,8 +12,6 @@
 
 #pragma once
 #include <boost/exception/exception.hpp>
-#include <boost/noncopyable.hpp>
-#include <array>
 
 namespace cryptox {
 
