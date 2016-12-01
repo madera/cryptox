@@ -14,6 +14,7 @@ include_directories(.)
 
 add_executable(core_tests
 	main.cxx
+	cryptox/memory_block_test.cxx
 	cryptox/detail/hex_string_test.cxx
 	cryptox/message_digests/message_digester_test.cxx
 	cryptox/message_digests/digest_test.cxx
