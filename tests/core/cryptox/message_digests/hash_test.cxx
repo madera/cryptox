@@ -20,9 +20,9 @@ static const std::string empty_string;
 static const std::string lazy_dog = "The quick brown fox jumps over the lazy dog";
 
 #define CHECK_DIGEST(algorithm, input, expected) \
+	BOOST_CHECK(hash<algorithm>(&input[0], input.size()) == expected); \
 	BOOST_CHECK(hash<algorithm>(input.c_str())           == expected); \
 	BOOST_CHECK(hash<algorithm>(input)                   == expected);
-//XXX//	BOOST_CHECK(hash<algorithm>(&input[0], input.size()) == expected); \
 
 BOOST_AUTO_TEST_CASE(md5_hash_test) {
 	CHECK_DIGEST(md5, empty_string, "d41d8cd98f00b204e9800998ecf8427e");

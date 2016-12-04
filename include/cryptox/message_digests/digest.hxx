@@ -28,7 +28,7 @@ namespace cryptox {
 		boost::is_pod<POD>,
 		typename Algorithm::digest_type&
 	>::type
-	update(const POD* data, const size_t size) {
+	digest(const POD* data, const size_t size) {
 		return update(to_memory_block(data, size));
 	}
 
