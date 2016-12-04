@@ -10,15 +10,14 @@
 # [ Read accompanying LICENSE or copy at http://www.boost.org/LICENSE_1_0.txt ]
 # [===========================================================================]
 
-cmake_minimum_required(VERSION 2.8.8 FATAL_ERROR)
+find_package(Boost COMPONENTS test_exec_monitor REQUIRED)
+find_package(OpenSSL REQUIRED)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-enable_testing()
-project(cryptox CXX)
+if (APPLE)
+	# Apple issues unfair deprecation warnings.
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
+endif()
 
-include_directories(include)
-add_subdirectory(tests)
-add_subdirectory(benchmarks)
-
-install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
+add_subdirectory(core)

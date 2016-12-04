@@ -10,15 +10,15 @@
 # [ Read accompanying LICENSE or copy at http://www.boost.org/LICENSE_1_0.txt ]
 # [===========================================================================]
 
-cmake_minimum_required(VERSION 2.8.8 FATAL_ERROR)
+include_directories(.)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
+add_executable(core_benchmarks
+	main.cxx
+	cryptox/message_digests/hash_benchmark.cxx
+)
 
-enable_testing()
-project(cryptox CXX)
-
-include_directories(include)
-add_subdirectory(tests)
-add_subdirectory(benchmarks)
-
-install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
+target_link_libraries(
+	core_benchmarks
+	${Boost_LIBRARIES}
+	${OPENSSL_LIBRARIES}
+)
