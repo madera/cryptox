@@ -19,7 +19,7 @@ using namespace cryptox;
 // Test using RFC 6070 Test Vectors
 // (https://www.ietf.org/rfc/rfc6070.txt)
 //
-BOOST_AUTO_TEST_CASE(pbkdf2_rfc6070_test) {
+BOOST_AUTO_TEST_CASE(rfc6070_pbkdf2_test) {
 	{
 		const bits<160>::type expected = {{
 			0x0c, 0x60, 0xc8, 0x0f, 0x96, 0x1f, 0x0e, 0x71,
@@ -81,5 +81,26 @@ BOOST_AUTO_TEST_CASE(pbkdf2_rfc6070_test) {
 			memory_block("sa\0lt", 5),
 			4096
 		)) == expected);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(saltless_pbkdf2_test) {
+	{
+		const bits<160>::type expected = {{
+			0x87, 0x54, 0xc3, 0x2c, 0x64, 0xb0, 0xf5, 0x24,
+			0xfc, 0x50, 0xc0, 0x0f, 0x78, 0x81, 0x35, 0xde,
+			0x2d, 0x2d, 0xd7, 0x67
+		}};
+
+		BOOST_CHECK((pbkdf2<sha1, 160>("password", 1)) == expected);
+	}
+	{
+		const bits<160>::type expected = {{
+			0x97, 0x23, 0x59, 0x1c, 0xd1, 0xcf, 0xec, 0xb0,
+			0xef, 0xd7, 0xb0, 0x27, 0xea, 0x93, 0xb1, 0x00,
+			0x33, 0x4b, 0x29, 0x86
+		}};
+
+		BOOST_CHECK((pbkdf2<sha1, 160>("password", 1000)) == expected);
 	}
 }

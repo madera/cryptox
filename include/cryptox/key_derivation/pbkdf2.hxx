@@ -40,10 +40,10 @@ namespace cryptox {
                 return result;
 	}
 
-	template <class DigestAlgorithm, int Bits, class Key, class Salt>
+	template <class DigestAlgorithm, int Bits, class Key>
 	typename bits<Bits>::type
 	pbkdf2(Key key, const size_t rounds) {
-		return pbkdf2<Bits>(
+		return pbkdf2<DigestAlgorithm, Bits>(
 			key,
 			memory_block(),
 			rounds
