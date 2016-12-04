@@ -24,35 +24,48 @@ namespace cryptox {
 		return other;
 	}
 
-	inline memory_block to_memory_block(const char* c_str) {
-		return memory_block(c_str, strlen(c_str));
-	}
-
-	inline memory_block to_memory_block(const char* c_str, const size_t size) {
-		return memory_block(c_str, size);
-	}
-
-	template <size_t N>
-	inline memory_block to_memory_block(const unsigned char (&bytes)[N]) {
-		return memory_block(bytes, N);
-	}
-
-	inline memory_block to_memory_block(const unsigned char* bytes, const size_t size) {
-		return memory_block(bytes, size);
-	}
-
-	inline memory_block to_memory_block(const std::string& string) {
-		return memory_block(string.c_str(), string.size());
+	template <class POD>
+	typename boost::enable_if<
+		boost::is_pod<POD>,
+		memory_block
+	>::type
+	inline to_memory_block(const POD* data, const size_t size) {
+		return memory_block(data, size);
 	}
 
 	template <class POD, size_t N>
-	inline memory_block to_memory_block(const boost::array<POD, N>& array) {
+	typename boost::enable_if<
+		boost::is_pod<POD>,
+		memory_block
+	>::type
+	inline to_memory_block(const POD (&data)[N]) {
+		return memory_block(data, N);
+	}
+
+	template <class POD, size_t N>
+	typename boost::enable_if<
+		boost::is_pod<POD>,
+		memory_block
+	>::type
+	inline to_memory_block(const boost::array<POD, N>& array) {
 		return memory_block(array.data(), array.size()*sizeof(POD));
 	}
 
 	template <class POD>
-	inline memory_block to_memory_block(const std::vector<POD>& pod_vector) {
+	typename boost::enable_if<
+		boost::is_pod<POD>,
+		memory_block
+	>::type
+	inline to_memory_block(const std::vector<POD>& pod_vector) {
 		return memory_block(pod_vector.data(), pod_vector.size()*sizeof(POD));
+	}
+
+	inline memory_block to_memory_block(const char* c_str) {
+		return memory_block(c_str, strlen(c_str));
+	}
+
+	inline memory_block to_memory_block(const std::string& string) {
+		return memory_block(string.c_str(), string.size());
 	}
 
 }

@@ -17,36 +17,34 @@
 namespace cryptox {
 
 	template <class Algorithm>
-	std::string hash(const char* c_string) {
-		return detail::hex_string(digest<Algorithm>(c_string, strlen(c_string)));
-	}
-
-	template <class Algorithm, typename T>
-	std::string hash(const T* data, const size_t size) {
-		return detail::hex_string(digest<Algorithm>(data, size));
-	}
-
-	template <class Algorithm, typename InputIterator>
-	std::string hash(InputIterator begin, InputIterator end) {
-		return detail::hex_string(digest<Algorithm>(begin, end));
-	}
-
-	template <class Algorithm, typename Container>
-	std::string hash(const Container& container) {
-		return detail::hex_string(digest<Algorithm>(container));
-	}
-
-	template <class Algorithm>
-	std::string hash(std::ifstream& input) {
-		return detail::hex_string(digest<Algorithm>(input));
-	}
-
-	template <class Algorithm>
 	struct hasher {
 		template <typename T>
 		std::string operator()(const T& x) const {
 			return hash<Algorithm>(x);
 		}
 	};
+
+	// --------------------------------------------------------------------
+
+	template <class Algorithm, class MemoryBlock>
+	std::string hash(MemoryBlock block) {
+		return detail::hex_string(digest<Algorithm>(block));
+	}
+
+	template <class Algorithm, class POD>
+	typename boost::enable_if<
+		boost::is_pod<POD>,
+		std::string
+	>::type
+	hash(const POD* data, const size_t size) {
+		return detail::hex_string(digest<Algorithm>(
+			to_memory_block(data, size)
+		));
+	}
+
+	template <class Algorithm>
+	std::string hash(std::ifstream& file, boost::optional<size_t> max = boost::none) {
+		return detail::hex_string(digest<Algorithm>(file, max));
+	}
 
 }

@@ -11,14 +11,13 @@
 // [===========================================================================]
 
 #pragma once
+#include "detail/message_digest_traits.hxx"
 #include "../detail/is_container.hxx"
 #include "../exceptions.hxx"
-#include "detail/message_digest_traits.hxx"
+#include "../memory_block.hxx"
 #include <boost/exception/exception.hpp>
 #include <boost/optional.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/range/begin.hpp>
-#include <boost/range/end.hpp>
 
 #ifndef CRYPTOX_NO_IFSTREAM
 #include <fstream>
@@ -54,50 +53,13 @@ namespace cryptox {
 				EVP_MD_CTX_destroy(_context);
 		}
 
-		this_type& update(const char* c_string) {
-			if (EVP_DigestUpdate(_context, (const std::uint8_t*)c_string, strlen(c_string)) != 1)
+		template <class MemoryBlock>
+		this_type& update(MemoryBlock block) {
+			const memory_block tmp = to_memory_block(block);
+			if (EVP_DigestUpdate(_context, tmp.first, tmp.second) != 1)
 				BOOST_THROW_EXCEPTION(evp_error());
-			return *this;
-		}
-
-		template <typename T>
-		typename boost::enable_if_c<
-			sizeof(T) == 1,
-			this_type&
-		>::type
-		update(const T* data, const size_t size) {
-			if (EVP_DigestUpdate(_context, (const std::uint8_t*)data, size) != 1)
-				BOOST_THROW_EXCEPTION(evp_error());
-			return *this;
-		}
-
-		template <typename InputIterator>
-		typename boost::enable_if_c<
-			sizeof(typename InputIterator::value_type) == 1,
-			this_type&
-		>::type
-		update(InputIterator begin, InputIterator end) {
-			std::uint8_t buffer[read_buffer_size];
-			while (begin != end) {
-				int i = 0;
-				for ( ; begin != end && i<sizeof(buffer); ++i)
-					buffer[i] = *begin++;
-
-				update(buffer, i);
-			}
 
 			return *this;
-		}
-
-		template <typename Container>
-		typename boost::enable_if<
-			detail::is_container<Container>
-		>::type
-		update(const Container& container) {
-			return (*this)(
-				boost::begin(container),
-				boost::end(container)
-			);
 		}
 
 		this_type& update(std::ifstream& file, boost::optional<size_t> max = boost::none) {
@@ -110,7 +72,7 @@ namespace cryptox {
 				file.read(buffer, sizeof(buffer));
 				current_read = file.gcount();
 				if (current_read > 0) {
-					update(buffer, current_read);
+					update(to_memory_block(buffer, current_read));
 					total_read += current_read;
 				}
 			} while (current_read > 0 && file);
