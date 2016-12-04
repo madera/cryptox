@@ -26,10 +26,10 @@ namespace cryptox {
 	template <class Algorithm, class POD>
 	typename boost::enable_if<
 		boost::is_pod<POD>,
-		typename Algorithm::digest_type&
+		typename Algorithm::digest_type
 	>::type
 	digest(const POD* data, const size_t size) {
-		return update(to_memory_block(data, size));
+		return digest<Algorithm>(memory_block(data, size));
 	}
 
 	template <class Algorithm>

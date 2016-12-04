@@ -37,7 +37,7 @@ namespace cryptox {
 		std::string
 	>::type
 	hash(const POD* data, const size_t size) {
-		return hash<Algorithm>(to_memory_block(data, size));
+		return hash<Algorithm>(digest<Algorithm>(data, size));
 	}
 
 	template <class Algorithm>
