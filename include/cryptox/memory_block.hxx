@@ -18,7 +18,18 @@
 
 namespace cryptox {
 
-	typedef std::pair<const void*, size_t> memory_block;
+	struct memory_block {
+		const void*  data;
+		const size_t size;
+
+		memory_block()
+		 : data(0), size(0) {
+		}
+
+		memory_block(const void* data_, const size_t size_)
+		 : data(data_), size(size_) {
+		}
+	};
 
 	inline memory_block to_memory_block(const memory_block& other) {
 		return other;

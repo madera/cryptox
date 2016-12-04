@@ -27,8 +27,8 @@ namespace cryptox {
 		const memory_block s = to_memory_block(salt);
 
 		if (PKCS5_PBKDF2_HMAC(
-			(const          char*)k.first, k.second,
-			(const unsigned char*)s.first, s.second,
+			(const          char*)k.data, k.size,
+			(const unsigned char*)s.data, s.size,
 			rounds,
 			DigestAlgorithm::evp_md(),
 			result.size(),
@@ -43,23 +43,11 @@ namespace cryptox {
 	template <class DigestAlgorithm, int Bits, class Key, class Salt>
 	typename bits<Bits>::type
 	pbkdf2(Key key, const size_t rounds) {
-		typename bits<Bits>::type result;
-
-		const memory_block k = to_memory_block(key);
-		const memory_block s(0, 0);
-
-		if (PKCS5_PBKDF2_HMAC(
-			(const          char*)k.first, k.second,
-			(const unsigned char*)s.first, s.second,
-			rounds,
-			DigestAlgorithm::evp_md(),
-			result.size(),
-			result.data()
-                ) != 1) {
-			std::fill(result.begin(), result.end(), 0);
-                }
-
-                return result;
+		return pbkdf2<Bits>(
+			key,
+			memory_block(),
+			rounds
+                );
 	}
 
 }

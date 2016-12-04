@@ -55,8 +55,8 @@ namespace cryptox {
 
 		template <class MemoryBlock>
 		this_type& update(MemoryBlock block) {
-			const memory_block tmp = to_memory_block(block);
-			if (EVP_DigestUpdate(_context, tmp.first, tmp.second) != 1)
+			const memory_block mb = to_memory_block(block);
+			if (EVP_DigestUpdate(_context, mb.data, mb.size) != 1)
 				BOOST_THROW_EXCEPTION(evp_error());
 
 			return *this;
