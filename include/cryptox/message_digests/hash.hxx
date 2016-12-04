@@ -16,16 +16,6 @@
 
 namespace cryptox {
 
-	template <class Algorithm>
-	struct hasher {
-		template <typename T>
-		std::string operator()(const T& x) const {
-			return hash<Algorithm>(x);
-		}
-	};
-
-	// --------------------------------------------------------------------
-
 	template <class Algorithm, class MemoryBlock>
 	std::string hash(MemoryBlock block) {
 		return detail::hex_string(digest<Algorithm>(block));
@@ -44,5 +34,15 @@ namespace cryptox {
 	std::string hash(std::ifstream& file, boost::optional<size_t> max = boost::none) {
 		return detail::hex_string(digest<Algorithm>(file, max));
 	}
+
+	// --------------------------------------------------------------------
+
+	template <class Algorithm>
+	struct hasher {
+		template <typename T>
+		std::string operator()(const T& x) const {
+			return hash<Algorithm>(x);
+		}
+	};
 
 }
