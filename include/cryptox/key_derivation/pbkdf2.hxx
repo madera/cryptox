@@ -13,6 +13,7 @@
 #pragma once
 #include "../detail/openssl.hxx"
 #include "../message_digests/detail/message_digest_traits.hxx"
+#include "../exceptions.hxx"
 #include "../memory_block.hxx"
 #include "../bits.hxx"
 
@@ -33,9 +34,8 @@ namespace cryptox {
 			DigestAlgorithm::evp_md(),
 			result.size(),
 			result.data()
-                ) != 1) {
-			std::fill(result.begin(), result.end(), 0);
-                }
+                ) != 1)
+			BOOST_THROW_EXCEPTION(evp_error());
 
                 return result;
 	}
