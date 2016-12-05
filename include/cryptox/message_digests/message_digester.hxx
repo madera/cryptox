@@ -11,11 +11,9 @@
 // [===========================================================================]
 
 #pragma once
-#include "detail/message_digest_traits.hxx"
+#include "all.hxx"
 #include "../detail/is_container.hxx"
-#include "../exceptions.hxx"
 #include "../memory_block.hxx"
-#include <boost/exception/exception.hpp>
 #include <boost/optional.hpp>
 #include <boost/noncopyable.hpp>
 

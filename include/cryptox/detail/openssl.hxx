@@ -11,4 +11,5 @@
 // [===========================================================================]
 
 #pragma once
+#include "exceptions.hxx"
 #include <openssl/evp.h>

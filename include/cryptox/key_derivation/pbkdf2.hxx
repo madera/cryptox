@@ -11,9 +11,7 @@
 // [===========================================================================]
 
 #pragma once
-#include "../detail/openssl.hxx"
-#include "../message_digests/detail/message_digest_traits.hxx"
-#include "../exceptions.hxx"
+#include "../message_digests/all.hxx"
 #include "../memory_block.hxx"
 #include "../bits.hxx"
 

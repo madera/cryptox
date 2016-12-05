@@ -11,7 +11,7 @@
 // [===========================================================================]
 
 #pragma once
-#include "../../detail/openssl.hxx"
+#include "../detail/openssl.hxx"
 #include <boost/array.hpp>
 #include <boost/static_assert.hpp>
 
@@ -35,7 +35,6 @@
 		} \
 	};
 
-// TODO: REVIEW: Should these stay here?
 namespace cryptox {
 	CRYPTOX_MESSAGE_DIGEST(md5   , 128, "MD5"    );
 	CRYPTOX_MESSAGE_DIGEST(sha   , 160, "SHA"    );

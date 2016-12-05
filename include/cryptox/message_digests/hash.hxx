@@ -27,7 +27,7 @@ namespace cryptox {
 		std::string
 	>::type
 	hash(const POD* data, const size_t size) {
-		return hash<Algorithm>(digest<Algorithm>(data, size));
+		return detail::hex_string(digest<Algorithm>(data, size));
 	}
 
 	template <class Algorithm>
