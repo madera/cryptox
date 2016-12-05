@@ -16,11 +16,11 @@
 using namespace cryptox;
 
 #define MESSAGE_DIGEST_BENCHMARK_RUN(algorithm, input_length) \
-	NONIUS_BENCHMARK(#input_length "_" #algorithm "_hash_benchmark", \
+	NONIUS_BENCHMARK(#input_length "_" #algorithm "_digest_benchmark", \
 		[](nonius::chronometer meter) { \
 			const std::string input = detail::make_random_string(input_length); \
 			meter.measure([=] { \
-				return hash<algorithm>(input); \
+				return digest<algorithm>(input); \
 			}); \
 		})
 

@@ -14,6 +14,7 @@ include_directories(.)
 
 add_executable(core_benchmarks
 	main.cxx
+	cryptox/message_digests/digest_benchmark.cxx
 	cryptox/message_digests/hash_benchmark.cxx
 )
 
