@@ -11,11 +11,13 @@
 // [===========================================================================]
 
 #pragma once
+#include "detail/hex_string.hxx"
 #include <boost/array.hpp>
-#include <string>
-#include <utility>
 
 namespace cryptox {
+
+	template <std::size_t Bits>
+	struct block;
 
 	namespace detail {
 		template <std::size_t Bits>
@@ -61,9 +63,17 @@ namespace cryptox {
 		operator const buffer_type&() const {
 			return bits;
 		}
-		
+
 		operator std::string() const {
 			return detail::hex_string(*this);
 		}
 	};
 }
+
+#ifndef CRYPTOX_NO_IO
+template <class Char, class Traits, std::size_t Bits>
+std::basic_ostream<Char, Traits>&
+operator<<(std::basic_ostream<Char, Traits>& output, const cryptox::block<Bits>& block) {
+	return (output << static_cast<std::string>(block));
+}
+#endif

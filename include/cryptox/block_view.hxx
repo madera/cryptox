@@ -31,6 +31,7 @@ namespace cryptox {
 		}
 	};
 
+	// Identity converter.
 	inline block_view to_block_view(const block_view& other) {
 		return other;
 	}
