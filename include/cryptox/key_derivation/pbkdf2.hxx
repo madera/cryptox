@@ -12,7 +12,7 @@
 
 #pragma once
 #include "../message_digests/all.hxx"
-#include "../memory_block.hxx"
+#include "../block_view.hxx"
 #include "../bits.hxx"
 
 namespace cryptox {
@@ -22,8 +22,8 @@ namespace cryptox {
 	pbkdf2(Key key, Salt salt, const size_t rounds) {
 		typename bits<Bits>::type result;
 
-		const memory_block k = to_memory_block(key);
-		const memory_block s = to_memory_block(salt);
+		const block_view k = to_block_view(key);
+		const block_view s = to_block_view(salt);
 
 		if (PKCS5_PBKDF2_HMAC(
 			(const          char*)k.data, k.size,
@@ -43,7 +43,7 @@ namespace cryptox {
 	pbkdf2(Key key, const size_t rounds) {
 		return pbkdf2<DigestAlgorithm, Bits>(
 			key,
-			memory_block(),
+			block_view(),
 			rounds
                 );
 	}

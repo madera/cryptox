@@ -13,7 +13,7 @@
 #pragma once
 #include "all.hxx"
 #include "../detail/is_container.hxx"
-#include "../memory_block.hxx"
+#include "../block_view.hxx"
 #include <boost/optional.hpp>
 #include <boost/noncopyable.hpp>
 
@@ -53,7 +53,7 @@ namespace cryptox {
 
 		template <class MemoryBlock>
 		this_type& update(MemoryBlock block) {
-			const memory_block mb = to_memory_block(block);
+			const block_view mb = to_block_view(block);
 			if (EVP_DigestUpdate(_context, mb.data, mb.size) != 1)
 				BOOST_THROW_EXCEPTION(evp_error());
 
@@ -70,7 +70,7 @@ namespace cryptox {
 				file.read(buffer, sizeof(buffer));
 				current_read = file.gcount();
 				if (current_read > 0) {
-					update(to_memory_block(buffer, current_read));
+					update(to_block_view(buffer, current_read));
 					total_read += current_read;
 				}
 			} while (current_read > 0 && file);

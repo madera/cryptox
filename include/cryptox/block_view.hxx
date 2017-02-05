@@ -18,65 +18,65 @@
 
 namespace cryptox {
 
-	struct memory_block {
+	struct block_view {
 		const void*  data;
 		const size_t size;
 
-		memory_block()
+		block_view()
 		 : data(0), size(0) {
 		}
 
-		memory_block(const void* data_, const size_t size_)
+		block_view(const void* data_, const size_t size_)
 		 : data(data_), size(size_) {
 		}
 	};
 
-	inline memory_block to_memory_block(const memory_block& other) {
+	inline block_view to_block_view(const block_view& other) {
 		return other;
 	}
 
 	template <class POD>
 	typename boost::enable_if<
 		boost::is_pod<POD>,
-		memory_block
+		block_view
 	>::type
-	inline to_memory_block(const POD* data, const size_t size) {
-		return memory_block(data, size);
+	inline to_block_view(const POD* data, const size_t size) {
+		return block_view(data, size);
 	}
 
 	template <class POD, size_t N>
 	typename boost::enable_if<
 		boost::is_pod<POD>,
-		memory_block
+		block_view
 	>::type
-	inline to_memory_block(const POD (&data)[N]) {
-		return memory_block(data, N);
+	inline to_block_view(const POD (&data)[N]) {
+		return block_view(data, N);
 	}
 
 	template <class POD, size_t N>
 	typename boost::enable_if<
 		boost::is_pod<POD>,
-		memory_block
+		block_view
 	>::type
-	inline to_memory_block(const boost::array<POD, N>& array) {
-		return memory_block(array.data(), array.size()*sizeof(POD));
+	inline to_block_view(const boost::array<POD, N>& array) {
+		return block_view(array.data(), array.size()*sizeof(POD));
 	}
 
 	template <class POD>
 	typename boost::enable_if<
 		boost::is_pod<POD>,
-		memory_block
+		block_view
 	>::type
-	inline to_memory_block(const std::vector<POD>& pod_vector) {
-		return memory_block(pod_vector.data(), pod_vector.size()*sizeof(POD));
+	inline to_block_view(const std::vector<POD>& pod_vector) {
+		return block_view(pod_vector.data(), pod_vector.size()*sizeof(POD));
 	}
 
-	inline memory_block to_memory_block(const char* c_str) {
-		return memory_block(c_str, strlen(c_str));
+	inline block_view to_block_view(const char* c_str) {
+		return block_view(c_str, strlen(c_str));
 	}
 
-	inline memory_block to_memory_block(const std::string& string) {
-		return memory_block(string.c_str(), string.size());
+	inline block_view to_block_view(const std::string& string) {
+		return block_view(string.c_str(), string.size());
 	}
 
 }

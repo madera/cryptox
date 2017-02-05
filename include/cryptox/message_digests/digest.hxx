@@ -29,7 +29,7 @@ namespace cryptox {
 		typename Algorithm::digest_type
 	>::type
 	digest(const POD* data, const size_t size) {
-		return digest<Algorithm>(memory_block(data, size));
+		return digest<Algorithm>(block_view(data, size));
 	}
 
 	template <class Algorithm>
