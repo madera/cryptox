@@ -14,22 +14,23 @@
 #include "../block.hxx"
 #include "../detail/openssl.hxx"
 
-#define CRYPTOX_MESSAGE_DIGEST(algorithm, algorithm_bits, algorithm_name) \
-	struct algorithm { \
-		BOOST_STATIC_ASSERT(algorithm_bits%8 == 0); \
-		\
-		typedef block<algorithm_bits> digest_type; \
-		\
-		static const int bits() { \
-			return algorithm_bits; \
-		} \
-		static const EVP_MD* evp_md() { \
-			return EVP_##algorithm(); \
-		} \
-		\
-		static const char* name() { \
-			return algorithm_name; \
-		} \
+namespace cryptox {
+	template <std::size_t Bits>
+	struct message_digester_algorithm {
+		BOOST_STATIC_ASSERT(Bits%8 == 0);
+
+		typedef block<Bits> digest_type;
+
+		static const int bits() {
+			return Bits;
+		}
+	};
+}
+
+#define CRYPTOX_MESSAGE_DIGEST(algorithm, algorithm_bits, algorithm_name)   \
+	struct algorithm : message_digester_algorithm<algorithm_bits> {     \
+		static const EVP_MD* evp_md() { return EVP_##algorithm(); } \
+		static const char*     name() { return algorithm_name;    } \
 	};
 
 namespace cryptox {
@@ -43,3 +44,5 @@ namespace cryptox {
 // TODO: EVP_mdc2
 // TODO: EVP_ripemd160
 }
+
+#undef CRYPTOX_MESSAGE_DIGEST
