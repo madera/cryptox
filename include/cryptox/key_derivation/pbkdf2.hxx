@@ -13,14 +13,12 @@
 #pragma once
 #include "../message_digests/all.hxx"
 #include "../block_view.hxx"
-#include "../bits.hxx"
 
 namespace cryptox {
 
 	template <class DigestAlgorithm, std::size_t Bits, class Key, class Salt>
-	typename bits<Bits>::type
-	pbkdf2(Key key, Salt salt, const size_t rounds) {
-		typename bits<Bits>::type result;
+	block<Bits> pbkdf2(Key key, Salt salt, const size_t rounds) {
+		block<Bits> result;
 
 		const block_view k = to_block_view(key);
 		const block_view s = to_block_view(salt);
@@ -39,8 +37,7 @@ namespace cryptox {
 	}
 
 	template <class DigestAlgorithm, std::size_t Bits, class Key>
-	typename bits<Bits>::type
-	pbkdf2(Key key, const size_t rounds) {
+	block<Bits> pbkdf2(Key key, const size_t rounds) {
 		return pbkdf2<DigestAlgorithm, Bits>(
 			key,
 			block_view(),

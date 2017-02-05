@@ -11,14 +11,11 @@
 // [===========================================================================]
 
 #pragma once
-#include "../bits.hxx"
+#include "../block.hxx"
 #include "../detail/openssl.hxx"
 
-//
-//#include "hash.hxx"
-//
+//		typedef boost::array<std::uint8_t, digest_size> digest_type; \
 
-//		typedef _hash_<algorithm_bits> digest_type_; \
 
 #define CRYPTOX_MESSAGE_DIGEST(algorithm, algorithm_bits, algorithm_name) \
 	struct algorithm { \
@@ -26,7 +23,7 @@
 		\
 		enum { digest_size = algorithm_bits/8 }; \
 		\
-		typedef boost::array<std::uint8_t, digest_size> digest_type; \
+		typedef block<algorithm_bits> digest_type; \
 		\
 		static const int bits() { \
 			return algorithm_bits; \

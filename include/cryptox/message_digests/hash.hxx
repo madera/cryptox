@@ -18,7 +18,7 @@ namespace cryptox {
 
 	template <class Algorithm, class MemoryBlock>
 	std::string hash(MemoryBlock block) {
-		return detail::hex_string(digest<Algorithm>(block));
+		return digest<Algorithm>(block);
 	}
 
 	template <class Algorithm, class POD>
@@ -27,12 +27,12 @@ namespace cryptox {
 		std::string
 	>::type
 	hash(const POD* data, const size_t size) {
-		return detail::hex_string(digest<Algorithm>(data, size));
+		return digest<Algorithm>(data, size);
 	}
 
 	template <class Algorithm>
 	std::string hash(std::ifstream& file, boost::optional<size_t> max = boost::none) {
-		return detail::hex_string(digest<Algorithm>(file, max));
+		return digest<Algorithm>(file, max);
 	}
 
 	// --------------------------------------------------------------------
