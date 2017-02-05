@@ -10,6 +10,8 @@
 // [ Read accompanying LICENSE or copy at http://www.boost.org/LICENSE_1_0.txt ]
 // [===========================================================================]
 
+// TODO: Add an explicit test for cryptox::digester<> class.
+
 #include "pch.hxx"
 #include <cryptox/message_digests/digest.hxx>
 #include <cryptox/detail/make_random_string.hxx>
@@ -189,6 +191,8 @@ BOOST_AUTO_TEST_CASE(sha512_digest_test) {
 	}
 }
 
+#ifndef CRYPTOX_NO_IFSTREAM
+
 BOOST_AUTO_TEST_CASE(simple_ifstream_digest_test) {
 	const std::string filename = detail::make_random_string();
 
@@ -261,3 +265,5 @@ BOOST_AUTO_TEST_CASE(blob_ifstream_digest_test) {
 		}
 	}
 }
+
+#endif // CRYPTOX_NO_IFSTREAM

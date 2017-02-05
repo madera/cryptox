@@ -40,7 +40,6 @@ namespace cryptox {
 		return digester.digest();
 	}
 
-	// TODO: Test.
 	template <class Algorithm>
 	struct digester {
 		template <typename T>

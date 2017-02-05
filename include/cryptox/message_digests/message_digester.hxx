@@ -60,6 +60,7 @@ namespace cryptox {
 			return *this;
 		}
 
+#ifndef CRYPTOX_NO_IFSTREAM
 		this_type& update(std::ifstream& file, boost::optional<size_t> max = boost::none) {
 			std::ifstream::char_type buffer[read_buffer_size];
 
@@ -77,6 +78,7 @@ namespace cryptox {
 
 			return *this;
 		}
+#endif
 
 		digest_type digest() {
 			digest_type result;
