@@ -11,9 +11,14 @@
 // [===========================================================================]
 
 #pragma once
+#include "../bits.hxx"
 #include "../detail/openssl.hxx"
-#include <boost/array.hpp>
-#include <boost/static_assert.hpp>
+
+//
+//#include "hash.hxx"
+//
+
+//		typedef _hash_<algorithm_bits> digest_type_; \
 
 #define CRYPTOX_MESSAGE_DIGEST(algorithm, algorithm_bits, algorithm_name) \
 	struct algorithm { \

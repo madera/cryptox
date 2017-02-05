@@ -17,7 +17,7 @@
 
 namespace cryptox {
 
-	template <class DigestAlgorithm, int Bits, class Key, class Salt>
+	template <class DigestAlgorithm, std::size_t Bits, class Key, class Salt>
 	typename bits<Bits>::type
 	pbkdf2(Key key, Salt salt, const size_t rounds) {
 		typename bits<Bits>::type result;
@@ -38,7 +38,7 @@ namespace cryptox {
                 return result;
 	}
 
-	template <class DigestAlgorithm, int Bits, class Key>
+	template <class DigestAlgorithm, std::size_t Bits, class Key>
 	typename bits<Bits>::type
 	pbkdf2(Key key, const size_t rounds) {
 		return pbkdf2<DigestAlgorithm, Bits>(

@@ -11,25 +11,59 @@
 // [===========================================================================]
 
 #pragma once
+#include <boost/array.hpp>
 #include <string>
-#include <random>
+#include <utility>
 
 namespace cryptox {
 
 	namespace detail {
-
-		static inline std::string make_random_string(const size_t size = 32) {
-			const char alphabet[] = "abcdefghijklmnopqrstuvwxyz0123456789";
-			const size_t alphabet_size = sizeof(alphabet) - 1;
-
-			// TODO: Optimize.
+		template <std::size_t Bits>
+		std::string hex_string(const block<Bits>& block) {
 			std::string result;
-			for (int i=0; i<size; ++i)
-				result.push_back(alphabet[rand()%alphabet_size]);
+			detail::copy_hex_string(
+				block.bits.begin(),
+				block.bits.end(),
+				std::back_inserter(result)
+			);
 
 			return result;
 		}
-
 	}
 
+	template <std::size_t Bits>
+	struct block {
+		typedef block this_type;
+		typedef boost::array<std::uint8_t, Bits/8> buffer_type;
+
+		buffer_type bits;
+
+		typename buffer_type::size_type size() const {
+			return bits.size();
+		}
+
+		typename buffer_type::iterator data() {
+			return bits.data();
+		} 
+
+		typename buffer_type::const_iterator data() const {
+			return bits.data();
+		} 
+
+		bool operator==(const this_type& other) const {
+			return bits == other.bits;
+		}
+
+		operator buffer_type&() {
+			return bits;
+		}
+
+		operator const buffer_type&() const {
+			return bits;
+		}
+		
+		operator std::string() const {
+			return detail::hex_string(*this);
+		}
+	};
 }

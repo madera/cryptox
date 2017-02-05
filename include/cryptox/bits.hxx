@@ -16,7 +16,7 @@
 
 namespace cryptox {
 
-	template <int Bits>
+	template <std::size_t Bits>
 	struct bits {
 		BOOST_STATIC_ASSERT_MSG(Bits%8 == 0, "Bits must be a multiple of 8");
 		typedef boost::array<std::uint8_t, Bits/8> type;
