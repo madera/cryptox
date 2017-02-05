@@ -11,7 +11,7 @@
 // [===========================================================================]
 
 #include "pch.hxx"
-#include <cryptox/message_digests/hash.hxx>
+#include <cryptox/message_digests/digest.hxx>
 #include <cryptox/detail/make_random_string.hxx>
 using namespace cryptox;
 
@@ -20,7 +20,7 @@ using namespace cryptox;
 		[](nonius::chronometer meter) { \
 			const std::string input = detail::make_random_string(input_length); \
 			meter.measure([=] { \
-				return hash<algorithm>(input); \
+				return digest<algorithm>(input); \
 			}); \
 		})
 

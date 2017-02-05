@@ -40,4 +40,14 @@ namespace cryptox {
 		return digester.digest();
 	}
 
+	// TODO: Test.
+	template <class Algorithm>
+	struct digester {
+		template <typename T>
+		typename Algorithm::digest_type
+		operator()(const T& x) const {
+			return digest<Algorithm>(x);
+		}
+	};
+
 }

@@ -7,7 +7,7 @@ A simple header-only C++ OpenSSL Wrapper for C++03 and up.
 In order to simplify examples we assume these two lines at the top of all snippets:
 
 ``` c++
-#include <cryptox/message_digests/hash.hxx>
+#include <cryptox/message_digests/digest.hxx>
 using namespace cryptox;
 ```
 

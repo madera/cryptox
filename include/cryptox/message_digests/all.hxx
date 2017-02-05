@@ -14,14 +14,9 @@
 #include "../block.hxx"
 #include "../detail/openssl.hxx"
 
-//		typedef boost::array<std::uint8_t, digest_size> digest_type; \
-
-
 #define CRYPTOX_MESSAGE_DIGEST(algorithm, algorithm_bits, algorithm_name) \
 	struct algorithm { \
 		BOOST_STATIC_ASSERT(algorithm_bits%8 == 0); \
-		\
-		enum { digest_size = algorithm_bits/8 }; \
 		\
 		typedef block<algorithm_bits> digest_type; \
 		\

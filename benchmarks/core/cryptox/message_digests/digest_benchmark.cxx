@@ -11,7 +11,7 @@
 // [===========================================================================]
 
 #include "pch.hxx"
-#include <cryptox/message_digests/hash.hxx>
+#include <cryptox/message_digests/digest.hxx>
 #include <cryptox/detail/make_random_string.hxx>
 using namespace cryptox;
 
