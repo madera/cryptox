@@ -21,12 +21,13 @@ static const std::string lazy_dog = "The quick brown fox jumps over the lazy dog
 
 template <class Algorithm>
 static void check_digests(const std::string& input, const char* expected) {
-	BOOST_CHECK_EQUAL(static_cast<std::string>(digest<Algorithm>(&input[0], input.size())), expected);
-	BOOST_CHECK_EQUAL(static_cast<std::string>(digest<Algorithm>(input.c_str())          ), expected);
-	BOOST_CHECK_EQUAL(static_cast<std::string>(digest<Algorithm>(input)                  ), expected);
+	BOOST_CHECK_EQUAL(to_hex(digest<Algorithm>(&input[0], input.size())), expected);
+	BOOST_CHECK_EQUAL(to_hex(digest<Algorithm>(input.c_str())          ), expected);
+	BOOST_CHECK_EQUAL(to_hex(digest<Algorithm>(input)                  ), expected);
 }
 
 BOOST_AUTO_TEST_CASE(md5_hash_test) {
+	to_hex(empty_string);
 	check_digests<md5>(empty_string, "d41d8cd98f00b204e9800998ecf8427e");
 	check_digests<md5>(lazy_dog,     "9e107d9d372bb6826bd81d3542a419d6");
 }
@@ -89,7 +90,7 @@ BOOST_AUTO_TEST_CASE(simple_ifstream_test) {
 		const char* expected = "07e547d9586f6a73f73fbac0435ed76951218fb7d0c8d788a309d785436bbb64"
 				       "2e93a252a954f23912547d1e8a3b5ed6e1bfd7097821233fa0538f3db854fee6";
 
-		BOOST_CHECK_EQUAL(static_cast<std::string>(digest<sha512>(input_file)), expected);
+		BOOST_CHECK_EQUAL(to_hex(digest<sha512>(input_file)), expected);
 		input_file.close();
 
 		std::remove(filename.c_str());
@@ -105,8 +106,14 @@ BOOST_AUTO_TEST_CASE(digester_test) {
 	expected.push_back("d41d8cd98f00b204e9800998ecf8427e"); // MD5 for empty_string.
 	expected.push_back("9e107d9d372bb6826bd81d3542a419d6"); // MD5 for lazy_dog.
 
-	std::vector<std::string> digestes;
-	std::transform(input.begin(), input.end(), std::back_inserter(digestes), digester<md5>());
+	std::vector<std::string> digested;
+	std::transform(
+		input.begin(), input.end(),
+		std::back_inserter(digested),
+		to_hex_decorator<
+			digester<md5>
+		>(digester<md5>())
+	);
 
-	BOOST_CHECK_EQUAL_COLLECTIONS(digestes.begin(), digestes.end(), expected.begin(), expected.end());
+	BOOST_CHECK_EQUAL_COLLECTIONS(digested.begin(), digested.end(), expected.begin(), expected.end());
 }

@@ -19,9 +19,10 @@ namespace cryptox {
 	template <std::size_t Bits>
 	struct block;
 
-	namespace detail {
+//	namespace detail {
+		// XXX: Remove.
 		template <std::size_t Bits>
-		std::string hex_string(const block<Bits>& block) {
+		std::string to_hex(const block<Bits>& block) {
 			std::string result;
 			detail::copy_hex_string(
 				block.buffer.begin(),
@@ -31,7 +32,7 @@ namespace cryptox {
 
 			return result;
 		}
-	}
+//	}
 
 	template <std::size_t Bits>
 	struct block {
@@ -117,9 +118,6 @@ namespace cryptox {
 			return buffer;
 		}
 
-		operator std::string() const {
-			return detail::hex_string(*this);
-		}
 	};
 }
 
@@ -127,6 +125,6 @@ namespace cryptox {
 template <class Char, class Traits, std::size_t Bits>
 std::basic_ostream<Char, Traits>&
 operator<<(std::basic_ostream<Char, Traits>& output, const cryptox::block<Bits>& block) {
-	return (output << static_cast<std::string>(block));
+	return output << to_hex(block);
 }
 #endif

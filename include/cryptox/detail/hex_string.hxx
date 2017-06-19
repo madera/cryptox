@@ -44,5 +44,34 @@ namespace cryptox {
 			return result;
 		}
 
+		static inline std::string hex_string(const std::string& str) {
+			return hex_string(str.begin(), str.end());
+		}
 	}
+
+	template <typename T>
+	std::string to_hex(const T& x) {
+		return detail::hex_string(x);
+	}
+
+	template <class InputIterator>
+	std::string to_hex(InputIterator first, InputIterator last) {
+		return detail::hex_string(first, last);
+	}
+
+	template <class Generator>
+	class to_hex_decorator {
+		const Generator& _generator;
+	public:
+		to_hex_decorator(const Generator& generator)
+		 : _generator(generator) {}
+
+		template <typename T>
+		std::string operator()(const T& x) const {
+			return to_hex(_generator(x));
+		}
+	};
+
+	using detail::hex_string;
+
 }

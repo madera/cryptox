@@ -17,23 +17,21 @@ using namespace cryptox;
 
 BOOST_AUTO_TEST_CASE(block_test) {
 	{
-		block<8> empty = {};
-		const std::string hex = empty;
-		BOOST_CHECK_EQUAL(hex, "00");
+		block<8> block = {};
+		BOOST_CHECK_EQUAL(to_hex(block), "00");
 	}
 	{
-		block<16> empty = {};
-		const std::string hex = empty;
-		BOOST_CHECK_EQUAL(hex, "0000");
+		block<16> block = {};
+		BOOST_CHECK_EQUAL(to_hex(block), "0000");
 	}
 
 	{
 		block<32> block = { 0x12, 0x34, 0x56, 0x78 };
-		BOOST_CHECK_EQUAL(static_cast<std::string>(block), "12345678");
+		BOOST_CHECK_EQUAL(to_hex(block), "12345678");
 	}
 	{
 		block<64> block = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef };
-		BOOST_CHECK_EQUAL((std::string)block, "0123456789abcdef");
+		BOOST_CHECK_EQUAL(to_hex(block), "0123456789abcdef");
 	}
 
 	{

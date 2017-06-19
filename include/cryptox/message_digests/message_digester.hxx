@@ -28,6 +28,7 @@ namespace cryptox {
 		typedef message_digester this_type;
 		typedef typename Algorithm::digest_type digest_type;
 
+		// TODO: Export this value to a configuration file.
 		static const size_t read_buffer_size = 64*1024;
 
 		message_digester() {
