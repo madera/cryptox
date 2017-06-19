@@ -17,8 +17,9 @@
 namespace cryptox {
 
 	template <class DigestAlgorithm, std::size_t Bits, class Key, class Salt>
-	block<Bits> pbkdf2(Key key, Salt salt, const size_t rounds) {
-		block<Bits> result;
+	typename block<Bits>::type
+	pbkdf2(Key key, Salt salt, const size_t rounds) {
+		typename block<Bits>::type result;
 
 		const block_view k = to_block_view(key);
 		const block_view s = to_block_view(salt);
@@ -37,7 +38,8 @@ namespace cryptox {
 	}
 
 	template <class DigestAlgorithm, std::size_t Bits, class Key>
-	block<Bits> pbkdf2(Key key, const size_t rounds) {
+	typename block<Bits>::type
+	pbkdf2(Key key, const size_t rounds) {
 		return pbkdf2<DigestAlgorithm, Bits>(
 			key,
 			block_view(),

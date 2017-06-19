@@ -19,7 +19,7 @@ namespace cryptox {
 	struct message_digester_algorithm {
 		BOOST_STATIC_ASSERT(Bits%8 == 0);
 
-		typedef block<Bits> digest_type;
+		typedef typename block<Bits>::type digest_type;
 
 		static const int bits() {
 			return Bits;
