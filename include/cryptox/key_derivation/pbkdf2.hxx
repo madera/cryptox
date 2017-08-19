@@ -31,10 +31,10 @@ namespace cryptox {
 			DigestAlgorithm::evp_md(),
 			result.size(),
 			result.data()
-                ) != 1)
+		) != 1)
 			BOOST_THROW_EXCEPTION(evp_error());
 
-                return result;
+		return result;
 	}
 
 	template <class DigestAlgorithm, std::size_t Bits, class Key>
@@ -44,7 +44,7 @@ namespace cryptox {
 			key,
 			block_view(),
 			rounds
-                );
+		);
 	}
 
 }
