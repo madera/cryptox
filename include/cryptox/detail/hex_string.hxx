@@ -16,7 +16,6 @@
 #include <iterator>
 
 namespace cryptox {
-
 	namespace detail {
 		template <class InputIterator, class OutputIterator>
 		OutputIterator copy_hex_string(InputIterator first, InputIterator last, OutputIterator d_first) {
@@ -37,26 +36,22 @@ namespace cryptox {
 			return result;
 		}
 
-		template <class T, std::size_t N>
-		std::string hex_string(const boost::array<T, N>& array) {
+		template <class T>
+		std::string hex_string(const T& x) {
 			std::string result;
-			detail::copy_hex_string(array.begin(), array.end(), std::back_inserter(result));
+			detail::copy_hex_string(x.begin(), x.end(), std::back_inserter(result));
 			return result;
 		}
-
-		static inline std::string hex_string(const std::string& str) {
-			return hex_string(str.begin(), str.end());
-		}
-	}
-
-	template <typename T>
-	std::string to_hex(const T& x) {
-		return detail::hex_string(x);
 	}
 
 	template <class InputIterator>
 	std::string to_hex(InputIterator first, InputIterator last) {
 		return detail::hex_string(first, last);
+	}
+
+	template <typename T>
+	std::string to_hex(const T& x) {
+		return detail::hex_string(x);
 	}
 
 	template <class Generator>
@@ -73,5 +68,4 @@ namespace cryptox {
 	};
 
 	using detail::hex_string;
-
 }
