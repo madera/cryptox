@@ -19,15 +19,15 @@ namespace cryptox {
 	template <std::size_t Bits>
 	struct block {
 		BOOST_STATIC_ASSERT(Bits%8 == 0);
-		typedef boost::array<std::uint8_t, Bits/8>  type;
+		typedef boost::array<std::uint8_t, Bits/8> type;
 	};
 
 }
 
 #ifndef CRYPTOX_NO_IO
-template <class Char, class Traits, std::size_t Bits>
+template <class Char, class Traits, typename T, std::size_t N>
 std::basic_ostream<Char, Traits>&
-operator<<(std::basic_ostream<Char, Traits>& output, const cryptox::block<Bits>& block) {
-	return output << to_hex(block);
+operator<<(std::basic_ostream<Char, Traits>& output, const boost::array<T, N>& array) {
+	return output << cryptox::to_hex(array);
 }
 #endif

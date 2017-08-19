@@ -38,9 +38,7 @@ namespace cryptox {
 
 		template <class T>
 		std::string hex_string(const T& x) {
-			std::string result;
-			detail::copy_hex_string(x.begin(), x.end(), std::back_inserter(result));
-			return result;
+			return hex_string(x.begin(), x.end());
 		}
 	}
 

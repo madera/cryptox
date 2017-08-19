@@ -12,10 +12,10 @@
 
 #include "pch.hxx"
 #include <cryptox/block.hxx>
-#include <boost/lexical_cast.hpp>
-using namespace cryptox;
 
 BOOST_AUTO_TEST_CASE(block_test) {
+	using namespace cryptox;
+
 	{
 		block<8>::type block = {};
 		BOOST_CHECK_EQUAL(to_hex(block), "00");
@@ -33,19 +33,10 @@ BOOST_AUTO_TEST_CASE(block_test) {
 		block<64>::type block = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef };
 		BOOST_CHECK_EQUAL(to_hex(block), "0123456789abcdef");
 	}
-
-	// {
-	// 	block<64>::type block = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef };
-
-	// 	std::ostringstream oss;
-	// 	oss << block;
-
-	// 	BOOST_CHECK_EQUAL(oss.str(), "0123456789abcdef");
-	// }
-
-	// Roadmap: Support boost::lexical_cast.
-	// {
-	//	block<72>::type block = { 0xb0, 0x05, 0x75, 0x1e, 0xc5, 0x1c, 0xa1, 0xca, 0x57 };
-	//	BOOST_CHECK_EQUAL(boost::lexical_cast<std::string>(block), "b005751ec51ca1ca57");
-	// }
+	{
+		block<64>::type block = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef };
+		std::ostringstream oss;
+		oss << block;
+		BOOST_CHECK_EQUAL(oss.str(), "0123456789abcdef");
+	}
 }
