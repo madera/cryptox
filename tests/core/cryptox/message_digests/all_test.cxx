@@ -20,20 +20,28 @@ using namespace cryptox;
 
 BOOST_AUTO_TEST_CASE(message_digest_registry_bits_test) {
 	BOOST_CHECK_EQUAL(md5   ::bits(), 128);
-	BOOST_CHECK_EQUAL(sha   ::bits(), 160);
+	//BOOST_CHECK_EQUAL(sha   ::bits(), 160);
 	BOOST_CHECK_EQUAL(sha1  ::bits(), 160);
 	BOOST_CHECK_EQUAL(sha224::bits(), 224);
 	BOOST_CHECK_EQUAL(sha256::bits(), 256);
 	BOOST_CHECK_EQUAL(sha384::bits(), 384);
 	BOOST_CHECK_EQUAL(sha512::bits(), 512);
+	BOOST_CHECK_EQUAL(sha3_224::bits(), 224);
+	BOOST_CHECK_EQUAL(sha3_256::bits(), 256);
+	BOOST_CHECK_EQUAL(sha3_384::bits(), 384);
+	BOOST_CHECK_EQUAL(sha3_512::bits(), 512);
 }
 
 BOOST_AUTO_TEST_CASE(message_digest_registry_names_test) {
 	BOOST_CHECK_EQUAL(std::string("MD5"    ), md5   ::name());
-	BOOST_CHECK_EQUAL(std::string("SHA"    ), sha   ::name());
+	//BOOST_CHECK_EQUAL(std::string("SHA"    ), sha   ::name());
 	BOOST_CHECK_EQUAL(std::string("SHA-1"  ), sha1  ::name());
 	BOOST_CHECK_EQUAL(std::string("SHA-224"), sha224::name());
 	BOOST_CHECK_EQUAL(std::string("SHA-256"), sha256::name());
 	BOOST_CHECK_EQUAL(std::string("SHA-384"), sha384::name());
 	BOOST_CHECK_EQUAL(std::string("SHA-512"), sha512::name());
+	BOOST_CHECK_EQUAL(std::string("SHA3-224"), sha3_224::name());
+	BOOST_CHECK_EQUAL(std::string("SHA3-256"), sha3_256::name());
+	BOOST_CHECK_EQUAL(std::string("SHA3-384"), sha3_384::name());
+	BOOST_CHECK_EQUAL(std::string("SHA3-512"), sha3_512::name());
 }

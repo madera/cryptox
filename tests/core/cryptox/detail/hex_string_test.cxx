@@ -11,7 +11,7 @@
 // [===========================================================================]
 
 #include "pch.hxx"
-#include <cryptox/hex_string.hxx>
+#include <cryptox/detail/hex_string.hxx>
 
 BOOST_AUTO_TEST_CASE(empty_detail_copy_hex_string_test) {
 	const std::string input    = "";

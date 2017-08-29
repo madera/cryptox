@@ -11,7 +11,7 @@
 # [===========================================================================]
 
 include_directories(.)
-
+include_directories(${Boost_INCLUDE_DIR})
 add_executable(core_benchmarks
 	main.cxx
 	cryptox/message_digests/digest_benchmark.cxx
