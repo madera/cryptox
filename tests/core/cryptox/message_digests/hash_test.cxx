@@ -31,12 +31,12 @@ BOOST_AUTO_TEST_CASE(md5_hash_test) {
 	check_digests<md5>(empty_string, "d41d8cd98f00b204e9800998ecf8427e");
 	check_digests<md5>(lazy_dog,     "9e107d9d372bb6826bd81d3542a419d6");
 }
-
+/*
 BOOST_AUTO_TEST_CASE(sha_hash_test) {
 	check_digests<sha>(empty_string, "f96cea198ad1dd5617ac084a3d92c6107708c0ef");
 	check_digests<sha>(lazy_dog,     "b03b401ba92d77666221e843feebf8c561cea5f7");
 }
-
+*/
 BOOST_AUTO_TEST_CASE(sha1_hash_test) {
 	check_digests<sha1>(empty_string, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
 	check_digests<sha1>(lazy_dog,     "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12");

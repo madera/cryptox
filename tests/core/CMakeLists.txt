@@ -11,6 +11,7 @@
 # [===========================================================================]
 
 include_directories(.)
+include_directories(${Boost_INCLUDE_DIR})
 
 add_executable(core_tests
 	main.cxx
