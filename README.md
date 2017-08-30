@@ -7,67 +7,47 @@ A simple header-only C++ OpenSSL Wrapper for C++03 and up.
 In order to simplify examples we assume these two lines at the top of all snippets:
 
 ``` c++
-#include <cryptox/message_digests/digest.hxx>
+#include <cryptox/all.hxx>
 using namespace cryptox;
 ```
 
 ### Message Digests
 
-#### > Digest as std::string
-
-Hashing a C string:
-
+#### C++11
 ``` c++
-std::string as_string = hash<md5>("Hello world!");
+auto hash = digest<md5>("Hello world!");
+auto as_string = to_hex(hash);
 ```
 
-Hashing bytes:
+#### C++03
+``` c++
+md5::digest_type hash = digest<md5>("Hello world!");
+std::string as_string = to_hex(hash);
+```
+Pretty much the same, except for the `auto` keyword.
 
+#### Digest arrays:
 ``` c++
 char buffer[] = { 0x00, 0x10, 0x20, 0x30 };
-std::string as_string = hash<sha1>(buffer, sizeof(buffer));
+auto hash = digest<sha1>(buffer, sizeof(buffer));
 ```
 
-Hash range of values:
-
+#### Digest containers:
 ``` c++
 std::vector<char> v = ...
-std::string as_string = hash<sha256>(v.begin(), v.end());
+auto hash = digest<sha512>(v);
 ```
-
-Or a container at once:
-
-``` c++
-std::vector<char> v = ...
-std::string as_string = hash<sha512>(v);
-```
-
-#### > Hash as boost::array<>
-
-Hashing a C string:
-
-``` c++
-md5::digest_type as_bytes = digest<md5>("Hello world!");
-```
-
-All the overloads of the previous example apply.
 
 ## The API
 
 ### Quick Note
-Please note that there is no API documentation at the moment. It's on the list, but not done yet. Take a look at the test code to understand the API. Every important user API function has at least one test case.
+Please note that there is no proper API documentation at the moment. It's on the list, but not done yet. Take a look at the test code to understand the API. Every important user API function has at least one test case.
 
 ### Message Digests
 
 [Message Digests](https://en.wikipedia.org/wiki/Cryptographic_hash_function) are implemented using cryptox::message_digester\<Algorithm\>, which is a class template that takes the desired hashing algorithm as a parameter. However, there are two high-level functions that ease most use cases.
 
 A Message Digest is defined as a function that reduces a given input to a fixed width binary value, called the Digest, or more commonly, the Hash.
-
-For the purposes of simplification, this library uses the words *digest* for binary values, and *hash* for textual hexadecimal representations of the digest. However, they have the same meaning in academic publishing.
-
-#### High-level API
-
-Two high-level functions are provided to get digests: one for binary results and one for a hexadecimal representation of it. That is, digest<Algorithm>() and hash<Algorithm>(), respectively.
 
 ### Digest Algorithms
 
