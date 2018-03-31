@@ -18,6 +18,7 @@ enable_testing()
 project(cryptox CXX)
 
 include_directories(include)
+
 add_subdirectory(tests)
 add_subdirectory(benchmarks)
 

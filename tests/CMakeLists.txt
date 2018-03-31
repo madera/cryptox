@@ -13,6 +13,8 @@
 find_package(Boost COMPONENTS test_exec_monitor REQUIRED)
 find_package(OpenSSL REQUIRED)
 
+include_directories(${Boost_INCLUDE_DIR})
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++03")
 
 if (APPLE)
