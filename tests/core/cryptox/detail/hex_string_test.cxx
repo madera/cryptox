@@ -11,7 +11,7 @@
 // [===========================================================================]
 
 #include "pch.hxx"
-#include <cryptox/hex_string.hxx>
+#include <cryptox/detail/hex_string.hxx>
 
 BOOST_AUTO_TEST_CASE(empty_detail_copy_hex_string_test) {
 	const std::string input    = "";
@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_CASE(empty_detail_copy_hex_string_test) {
 
 	std::string output;
 	cryptox::detail::copy_hex_string(input.begin(), input.end(), std::back_inserter(output));
-	BOOST_CHECK_EQUAL_COLLECTIONS(output.begin(), output.end(), expected.begin(), expected.end());
+	BOOST_CHECK_EQUAL(output, expected);
 }
 
 BOOST_AUTO_TEST_CASE(pangram_detail_copy_hex_string_test) {
@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(pangram_detail_copy_hex_string_test) {
 
 	std::string output;
 	cryptox::detail::copy_hex_string(input.begin(), input.end(), std::back_inserter(output));
-	BOOST_CHECK_EQUAL_COLLECTIONS(output.begin(), output.end(), expected.begin(), expected.end());
+	BOOST_CHECK_EQUAL(output, expected);
 }
 
 BOOST_AUTO_TEST_CASE(empty_hex_string_test) {
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(empty_hex_string_test) {
 	const std::string expected = "";
 
 	std::string output = cryptox::hex_string(input.begin(), input.end());
-	BOOST_CHECK_EQUAL_COLLECTIONS(output.begin(), output.end(), expected.begin(), expected.end());
+	BOOST_CHECK_EQUAL(output, expected);
 }
 
 BOOST_AUTO_TEST_CASE(pangram_hex_string_test) {
@@ -46,5 +46,5 @@ BOOST_AUTO_TEST_CASE(pangram_hex_string_test) {
 				     "56d7073206f76657220746865206c617a7920646f67";
 
 	std::string output = cryptox::hex_string(input.begin(), input.end());
-	BOOST_CHECK_EQUAL_COLLECTIONS(output.begin(), output.end(), expected.begin(), expected.end());
+	BOOST_CHECK_EQUAL(output, expected);
 }

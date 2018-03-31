@@ -11,7 +11,6 @@
 // [===========================================================================]
 
 #pragma once
-#include <boost/array.hpp>
 #include <string>
 #include <iterator>
 
