@@ -10,18 +10,28 @@
 // [ Read accompanying LICENSE or copy at http://www.boost.org/LICENSE_1_0.txt ]
 // [===========================================================================]
 
-#pragma once
-#include "make_random_vector.hxx"
-#include "to_base64.hxx"
+#include "pch.hxx"
+#include <cryptox/detail/make_random_string.hxx>
+#include <boost/foreach.hpp>
 
-namespace cryptox {
+BOOST_AUTO_TEST_CASE(nonrepeat_make_random_string_test) {
+	typedef std::string buffer_type;
+	buffer_type buffers[128];
 
-	namespace detail {
-
-		static inline std::string make_random_string(const size_t size = 32) {
-			return to_base64(make_random_vector(size));
-		}
-
+	BOOST_FOREACH(buffer_type& buffer, buffers) {
+		buffer = cryptox::detail::make_random_string();
 	}
 
+	// Scan O(n^2) for duplicates.
+	BOOST_FOREACH(const buffer_type& buffer, buffers) {
+		size_t instances = 0;
+
+		BOOST_FOREACH(const buffer_type& other, buffers) {
+			if (buffer == other)
+				++instances;
+		}
+
+		// We should only have one instance per random buffer.
+		BOOST_CHECK_EQUAL(instances, 1);
+	}
 }
