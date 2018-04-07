@@ -18,6 +18,8 @@ add_executable(core_tests
 	cryptox/detail/to_base64_test.cxx
 	cryptox/detail/to_hex_test.cxx
 	cryptox/detail/randomize_test.cxx
+	cryptox/detail/make_random_string_test.cxx
+	cryptox/detail/make_random_vector_test.cxx
 	cryptox/block_test.cxx
 	cryptox/block_view_test.cxx
 	cryptox/message_digests/all_test.cxx
