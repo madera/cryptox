@@ -2,7 +2,7 @@
 # [                               C r y p t o x                               ]
 # [---------------------------------------------------------------------------]
 # [                                                                           ]
-# [                          Copyright (C) 2016-2017                          ]
+# [                          Copyright (C) 2016-2018                          ]
 # [                      Rodrigo Madera <madera@acm.org>                      ]
 # [                                                                           ]
 # [---------------------------------------------------------------------------]
@@ -15,7 +15,8 @@ include_directories(.)
 add_executable(core_tests
 	main.cxx
 	cryptox/all_test.cxx
-	cryptox/detail/hex_string_test.cxx
+	cryptox/detail/to_base64_test.cxx
+	cryptox/detail/to_hex_test.cxx
 	cryptox/detail/randomize_test.cxx
 	cryptox/block_test.cxx
 	cryptox/block_view_test.cxx
