@@ -71,7 +71,7 @@ BOOST_AUTO_TEST_CASE(sha512_hash_test) {
 }
 
 BOOST_AUTO_TEST_CASE(simple_ifstream_test) {
-	const std::string filename = detail::make_random_string();
+	const std::string filename = std::tmpnam(0);
 
 	/* Create temporary file */ {
 		std::ofstream output_file(filename);

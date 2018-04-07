@@ -194,12 +194,12 @@ BOOST_AUTO_TEST_CASE(sha512_digest_test) {
 #ifndef CRYPTOX_NO_IFSTREAM
 
 BOOST_AUTO_TEST_CASE(simple_ifstream_digest_test) {
-	const std::string filename = detail::make_random_string();
+	const std::string filename = std::tmpnam(0);
 
 	/* Create temporary file */ {
 		std::ofstream output_file(filename);
 		if (!output_file)
-			throw std::runtime_error("Failed to create file for tests.");
+			throw std::runtime_error("Failed to create file for tests: " + filename);
 
 		output_file << lazy_dog;
 		output_file.close();
@@ -208,7 +208,7 @@ BOOST_AUTO_TEST_CASE(simple_ifstream_digest_test) {
 	/* Digest the file */ {
 		std::ifstream input_file(filename);
 		if (!input_file)
-			throw std::runtime_error("Failed to open test file.");
+			throw std::runtime_error("Failed to read test file: : " + filename);
 
 		const sha512::digest_type expected = {{
 			0x07, 0xe5, 0x47, 0xd9, 0x58, 0x6f, 0x6a, 0x73,
@@ -233,19 +233,19 @@ BOOST_AUTO_TEST_CASE(blob_ifstream_digest_test) {
 	while (rounds--) {
 		const size_t blob_size = 1*1024*1024;
 
-		const std::string filename = detail::make_random_string();
+		const std::string filename = std::tmpnam(0);
 		std::vector<std::ofstream::char_type> v(blob_size);
 
 		/* Create temporary file */ {
 			std::ofstream output_file(filename);
 			if (!output_file)
-				throw std::runtime_error("Failed to create file for tests.");
+				throw std::runtime_error("Failed to create file for tests: " + filename);
 
 			for (int i=0; i<v.size(); ++i)
 				v[i] = rand()%255;
 
 			if (!output_file.write(&v[0], v.size()))
-				throw std::runtime_error("Failed to write test file.");
+				throw std::runtime_error("Failed to write test file: : " + filename);
 
 			output_file.close();
 		}
@@ -254,7 +254,7 @@ BOOST_AUTO_TEST_CASE(blob_ifstream_digest_test) {
 			std::ifstream input_file(filename);
 			const size_t file_size = detail::ifstream_size(input_file);
 			if (!input_file)
-				throw std::runtime_error("Failed to open test file.");
+				throw std::runtime_error("Failed to read test file: : " + filename);
 
 			const sha512::digest_type expected = digest<sha512>(v);
 
