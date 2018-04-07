@@ -24,7 +24,6 @@ BOOST_AUTO_TEST_CASE(block_test) {
 		block<16>::type block = {};
 		BOOST_CHECK_EQUAL(to_hex(block), "0000");
 	}
-
 	{
 		block<32>::type block = { 0x12, 0x34, 0x56, 0x78 };
 		BOOST_CHECK_EQUAL(to_hex(block), "12345678");
