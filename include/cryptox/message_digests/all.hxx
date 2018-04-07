@@ -21,7 +21,7 @@ namespace cryptox {
 
 		typedef typename block<Bits>::type digest_type;
 
-		static const int bits() {
+		static int bits() {
 			return Bits;
 		}
 	};
