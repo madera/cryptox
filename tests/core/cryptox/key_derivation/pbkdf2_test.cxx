@@ -2,7 +2,7 @@
 // [                               C r y p t o x                               ]
 // [---------------------------------------------------------------------------]
 // [                                                                           ]
-// [                          Copyright (C) 2016-2017                          ]
+// [                          Copyright (C) 2016-2018                          ]
 // [                      Rodrigo Madera <madera@acm.org>                      ]
 // [                                                                           ]
 // [---------------------------------------------------------------------------]
@@ -12,11 +12,11 @@
 
 #include "pch.hxx"
 #include <cryptox/key_derivation/pbkdf2.hxx>
-#include <cryptox/detail/hex_string.hxx>
+#include <cryptox/detail/to_hex.hxx>
 using namespace cryptox;
 
 //
-// Test using RFC 6070 Test Vectors
+// Testing using RFC 6070 Test Vectors
 // (https://www.ietf.org/rfc/rfc6070.txt)
 //
 BOOST_AUTO_TEST_CASE(rfc6070_pbkdf2_test) {
