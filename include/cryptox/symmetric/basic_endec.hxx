@@ -27,16 +27,11 @@
 #include <cmath>
 #include <memory>
 
+#include "all.hxx"
+
 namespace cryptox {
 
-	typedef unsigned char byte;
-
-	typedef const EVP_CIPHER* (*cipher_fx_t)();
-	typedef int (*  init_fx_t)(EVP_CIPHER_CTX*, const EVP_CIPHER*, ENGINE*, const byte*, const byte*);
-	typedef int (*update_fx_t)(EVP_CIPHER_CTX*, byte*, int*, const byte*, int);
-	typedef int (* final_fx_t)(EVP_CIPHER_CTX*, byte*, int*);
-
-	template <cipher_fx_t Cipher, init_fx_t InitFx, update_fx_t UpdateFx, final_fx_t FinalFx>
+	template <class Algorithm, init_fx_t InitFx, update_fx_t UpdateFx, final_fx_t FinalFx>
 	class evp_cipher_context : boost::noncopyable {
 		EVP_CIPHER_CTX _context;
 
@@ -51,7 +46,7 @@ namespace cryptox {
 			std::copy(iv_first, iv_last, iv);
 
 			EVP_CIPHER_CTX_init(&_context);
-			return InitFx(&_context, Cipher(), 0, key, iv) == 1;
+			return InitFx(&_context, Algorithm::cipher(), 0, key, iv) == 1;
 		}
 
 	public:
@@ -117,41 +112,14 @@ namespace cryptox {
 
 namespace cryptox {
 
-	template <cipher_fx_t Cipher, init_fx_t InitFx, update_fx_t UpdateFx, final_fx_t FinalFx>
-	class basic_endec : public evp_cipher_context<Cipher, InitFx, UpdateFx, FinalFx> {
-		typedef evp_cipher_context<Cipher, InitFx, UpdateFx, FinalFx> base_type;
-		typedef std::vector<std::uint8_t> buffer_type;
+	template <class Algorithm, init_fx_t InitFx, update_fx_t UpdateFx, final_fx_t FinalFx>
+	struct basic_endec : public evp_cipher_context<Algorithm, InitFx, UpdateFx, FinalFx> {
+		typedef evp_cipher_context<Algorithm, InitFx, UpdateFx, FinalFx> base_type;
 
-		// TODO: Remove.
-		buffer_type _salt;
-	public:
-		// TODO: Move to algorithm.
-		static size_t iv_size() {
-			return EVP_CIPHER_iv_length(Cipher());
-		}
-
-		// TODO: Move to algorithm.
-		static size_t block_size() {
-			return EVP_CIPHER_block_size(Cipher());
-		}
-
-		// TODO: Move to algorithm.
-		static size_t ciphertext_size_for(const size_t plaintext_size) {
-			const size_t pz = plaintext_size;
-			const size_t bz = block_size();
-			return (pz/bz + 1)*bz;
-		}
-
-	public:
-		template <class InputIterator>
-		basic_endec(
-			InputIterator  key_first, InputIterator  key_last,
-			InputIterator salt_first, InputIterator salt_last,
-			InputIterator   iv_first, InputIterator   iv_last,
-			const int key_rounds = 64*1024
-		) : base_type(key_first, key_last, iv_first, iv_last),
-		    _salt(salt_first, salt_last) {
-
+		template <class KeyInputIterator, class IVInputIterator>
+		basic_endec(KeyInputIterator key_first, KeyInputIterator key_last,
+		             IVInputIterator  iv_first,  IVInputIterator  iv_last)
+		 : base_type(key_first, key_last, iv_first, iv_last) {
 			// uint8_t garbled_key[32];
 			// PKCS5_PBKDF2_HMAC_SHA1(
 			// 	(const char*)&_key[0],  _key.size(),
