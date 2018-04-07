@@ -11,7 +11,7 @@
 // [===========================================================================]
 
 #pragma once
-#include "detail/hex_string.hxx"
+#include "detail/to_hex.hxx"
 #include <boost/array.hpp>
 
 namespace cryptox {

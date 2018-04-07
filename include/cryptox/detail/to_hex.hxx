@@ -2,7 +2,7 @@
 // [                               C r y p t o x                               ]
 // [---------------------------------------------------------------------------]
 // [                                                                           ]
-// [                          Copyright (C) 2016-2017                          ]
+// [                          Copyright (C) 2016-2018                          ]
 // [                      Rodrigo Madera <madera@acm.org>                      ]
 // [                                                                           ]
 // [---------------------------------------------------------------------------]
@@ -17,7 +17,7 @@
 namespace cryptox {
 	namespace detail {
 		template <class InputIterator, class OutputIterator>
-		OutputIterator copy_hex_string(InputIterator first, InputIterator last, OutputIterator d_first) {
+		OutputIterator encode_hex_string(InputIterator first, InputIterator last, OutputIterator d_first) {
 			for (size_t i=0; first != last; ++i) {
 				const bool high_nibble = (i%2 == 0);
 				*d_first++ = "0123456789abcdef"[*first >> 4*high_nibble & 0x0f];
@@ -27,28 +27,18 @@ namespace cryptox {
 
 			return d_first;
 		}
-
-		template <class InputIterator>
-		std::string hex_string(InputIterator first, InputIterator last) {
-			std::string result;
-			detail::copy_hex_string(first, last, std::back_inserter(result));
-			return result;
-		}
-
-		template <class T>
-		std::string hex_string(const T& x) {
-			return hex_string(x.begin(), x.end());
-		}
 	}
 
 	template <class InputIterator>
 	std::string to_hex(InputIterator first, InputIterator last) {
-		return detail::hex_string(first, last);
+		std::string result;
+		detail::encode_hex_string(first, last, std::back_inserter(result));
+		return result;
 	}
 
 	template <typename T>
 	std::string to_hex(const T& x) {
-		return detail::hex_string(x);
+		return to_hex(x.begin(), x.end());
 	}
 
 	template <class Generator>
@@ -63,6 +53,4 @@ namespace cryptox {
 			return to_hex(_generator(x));
 		}
 	};
-
-	using detail::hex_string;
 }
