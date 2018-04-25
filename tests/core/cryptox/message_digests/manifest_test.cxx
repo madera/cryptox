@@ -2,7 +2,7 @@
 // [                               C r y p t o x                               ]
 // [---------------------------------------------------------------------------]
 // [                                                                           ]
-// [                          Copyright (C) 2016-2017                          ]
+// [                          Copyright (C) 2016-2018                          ]
 // [                      Rodrigo Madera <madera@acm.org>                      ]
 // [                                                                           ]
 // [---------------------------------------------------------------------------]
@@ -11,9 +11,17 @@
 // [===========================================================================]
 
 #include "pch.hxx"
-#include <cryptox/message_digests/message_digester.hxx>
-using namespace cryptox;
+#include <cryptox/message_digests/message_digest_algorithm.hxx>
 
-// No specific binary tests done here. Instead we safely delegate them to
-// hash<>'s internal tests, which depend on digest<>, which depends on
-// message_digester<>.
+template <class Algorithm>
+static void check_manifest(const size_t bits, const std::string description) {
+	BOOST_CHECK_EQUAL(Algorithm::size()*8, bits);
+	BOOST_CHECK_EQUAL(Algorithm::name(), description);
+}
+
+#define MESSAGE_DIGEST_MANIFEST_TEST(algorithm, bits, description)                    \
+	BOOST_AUTO_TEST_CASE(BOOST_PP_CAT(algorithm,_message_digest_manifest_test)) { \
+		check_manifest<cryptox::algorithm>(bits, description);                \
+	}
+
+CRYPTOX_PP_FOR_EACH_MESSAGE_DIGEST_ALGORITHM(MESSAGE_DIGEST_MANIFEST_TEST)
