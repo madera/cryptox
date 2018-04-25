@@ -10,8 +10,16 @@
 // [ Read accompanying LICENSE or copy at http://www.boost.org/LICENSE_1_0.txt ]
 // [===========================================================================]
 
-#include "pch.hxx"
+#pragma once
+#include <boost/preprocessor/seq/for_each.hpp>
+#include <boost/preprocessor/tuple/elem.hpp>
+#include <boost/preprocessor/cat.hpp>
 
-// No specific basic_endec<> tests done here. Instead we safely delegate them to
-// other tests in this directory, which depend on endec_pair_tester<>, which in
-// turn depends on basic_endec<>.
+#define __CRYPTOX_PP_FOR_EACH_SYMMETRIC_ALGORITHM(r, callback, elem) \
+	callback(BOOST_PP_TUPLE_ELEM(2, 0, elem),                    \
+	         BOOST_PP_TUPLE_ELEM(2, 1, elem))
+
+#define CRYPTOX_PP_FOR_EACH_SYMMETRIC_ALGORITHM(callback)                \
+	BOOST_PP_SEQ_FOR_EACH(__CRYPTOX_PP_FOR_EACH_SYMMETRIC_ALGORITHM, \
+	                      callback,                                  \
+	                      CRYPTOX_SYMMETRIC_ALGORITHMS)

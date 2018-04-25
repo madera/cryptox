@@ -11,7 +11,26 @@
 // [===========================================================================]
 
 #include "pch.hxx"
+#include "endec_pair_tester.hxx"
 
-// No specific basic_endec<> tests done here. Instead we safely delegate them to
-// other tests in this directory, which depend on endec_pair_tester<>, which in
-// turn depends on basic_endec<>.
+template <class Algorithm>
+static void linear_roundtrip_test(const size_t buffer_size = 4096) {
+	cryptox::tests::endec_pair_tester<Algorithm> endec;
+
+	typedef std::vector<std::uint8_t> buffer_type;
+
+	using cryptox::detail::make_random_vector;
+	const buffer_type master = make_random_vector(buffer_size);
+	for (int i=0; i<=master.size(); ++i) {
+		endec.check_roundtrip(
+			buffer_type(master.begin(), master.begin() + i)
+		);
+	}
+}
+
+#define LINEAR_ROUNDTRIP_TEST(algorithm, description)                          \
+	BOOST_AUTO_TEST_CASE(BOOST_PP_CAT(algorithm,_linear_roundtrip_test)) { \
+		linear_roundtrip_test<cryptox::algorithm>();                   \
+	}
+
+CRYPTOX_PP_FOR_EACH_SYMMETRIC_ALGORITHM(LINEAR_ROUNDTRIP_TEST)

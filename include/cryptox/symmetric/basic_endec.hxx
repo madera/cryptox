@@ -11,33 +11,24 @@
 // [===========================================================================]
 
 #pragma once
-#include "../detail/randomize.hxx"
-#include "../detail/to_base64.hxx"
-#include "../detail/to_hex.hxx"
-#include <openssl/evp.h>
-#include <openssl/sha.h>
+#include "../detail/openssl.hxx"
+#include "../detail/exceptions.hxx"
 #include <boost/noncopyable.hpp>
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <random>
-#include <cmath>
-#include <memory>
-
-#include "all.hxx"
 
 namespace cryptox {
 
-	template <class Algorithm, init_fx_t InitFx, update_fx_t UpdateFx, final_fx_t FinalFx>
+	template <
+		class Algorithm,
+		openssl::cipher_init_fx_t   InitFx,
+		openssl::cipher_update_fx_t UpdateFx,
+		openssl::cipher_final_fx_t  FinalFx
+	>
 	class evp_cipher_context : boost::noncopyable {
 		EVP_CIPHER_CTX _context;
-
+	public:
 		template <class KeyInputIterator, class IVInputIterator>
-		bool initialize(KeyInputIterator key_first, KeyInputIterator key_last,
-		                IVInputIterator  iv_first,  IVInputIterator  iv_last) {
+		evp_cipher_context(KeyInputIterator key_first, KeyInputIterator key_last,
+		                    IVInputIterator  iv_first,  IVInputIterator  iv_last) {
 
 			std::uint8_t key[EVP_MAX_KEY_LENGTH];
 			std::copy(key_first, key_last, key);
@@ -46,16 +37,8 @@ namespace cryptox {
 			std::copy(iv_first, iv_last, iv);
 
 			EVP_CIPHER_CTX_init(&_context);
-			return InitFx(&_context, Algorithm::cipher(), 0, key, iv) == 1;
-		}
-
-	public:
-		template <class KeyInputIterator, class IVInputIterator>
-		evp_cipher_context(KeyInputIterator key_first, KeyInputIterator key_last,
-		                    IVInputIterator  iv_first,  IVInputIterator  iv_last) {
-			// TODO: Launch exception on error.
-			initialize(key_first, key_last, iv_first, iv_last);
-			reset(); // XXX: Is this needed? We just initialized.
+			if (InitFx(&_context, Algorithm::cipher(), 0, key, iv) != 1)
+				BOOST_THROW_EXCEPTION(evp_error());
 		}
 
 		~evp_cipher_context() {
@@ -63,8 +46,8 @@ namespace cryptox {
 		}
 
 		void reset() {
-			// TODO: Launch exception on error.
-			InitFx(&_context, 0, 0, 0, 0);
+			if (InitFx(&_context, 0, 0, 0, 0) != 1)
+				BOOST_THROW_EXCEPTION(evp_error());
 		}
 
 		template <class InputIterator, class OutputIterator>
@@ -82,10 +65,8 @@ namespace cryptox {
 				while (input_buffer_size < sizeof(input_buffer) && input_itr != input_last)
 					input_buffer[input_buffer_size++] = *input_itr++;
 
-				const int result = UpdateFx(&_context,
-				                            output_buffer, &output_buffer_size,
-				                             input_buffer,   input_buffer_size);
-				if (result != 1)
+				if (UpdateFx(&_context, output_buffer, &output_buffer_size,
+				             input_buffer, input_buffer_size) != 1)
 					return output_first;
 
 				output_itr = std::copy(output_buffer, output_buffer + output_buffer_size, output_itr);
@@ -98,10 +79,8 @@ namespace cryptox {
 		OutputIterator finalize(OutputIterator output_first) {
 			std::uint8_t buffer[2*EVP_MAX_BLOCK_LENGTH];
 
-			int written = 0;
-			const int result = FinalFx(&_context, buffer, &written);
-			assert(result < sizeof(buffer));
-			if (result != 1)
+			int written;
+			if (FinalFx(&_context, buffer, &written) != 1)
 				written = 0;
 
 			return std::copy(buffer, buffer + written, output_first);
@@ -112,7 +91,12 @@ namespace cryptox {
 
 namespace cryptox {
 
-	template <class Algorithm, init_fx_t InitFx, update_fx_t UpdateFx, final_fx_t FinalFx>
+	template <
+		class Algorithm,
+		openssl::cipher_init_fx_t   InitFx,
+		openssl::cipher_update_fx_t UpdateFx,
+		openssl::cipher_final_fx_t  FinalFx
+	>
 	struct basic_endec : public evp_cipher_context<Algorithm, InitFx, UpdateFx, FinalFx> {
 		typedef evp_cipher_context<Algorithm, InitFx, UpdateFx, FinalFx> base_type;
 
@@ -120,6 +104,7 @@ namespace cryptox {
 		basic_endec(KeyInputIterator key_first, KeyInputIterator key_last,
 		             IVInputIterator  iv_first,  IVInputIterator  iv_last)
 		 : base_type(key_first, key_last, iv_first, iv_last) {
+			// TODO: Use easy PBKDF2 for users.
 			// uint8_t garbled_key[32];
 			// PKCS5_PBKDF2_HMAC_SHA1(
 			// 	(const char*)&_key[0],  _key.size(),

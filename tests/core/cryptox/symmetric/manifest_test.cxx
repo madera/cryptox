@@ -11,7 +11,16 @@
 // [===========================================================================]
 
 #include "pch.hxx"
+#include <cryptox/symmetric/symmetric_algorithm.hxx>
 
-// No specific basic_endec<> tests done here. Instead we safely delegate them to
-// other tests in this directory, which depend on endec_pair_tester<>, which in
-// turn depends on basic_endec<>.
+template <class Algorithm>
+static void check_manifest(const std::string description) {
+	BOOST_CHECK_EQUAL(Algorithm::name(), description);
+}
+
+#define SYMMETRIC_MANIFEST_TEST(algorithm, description)                          \
+	BOOST_AUTO_TEST_CASE(BOOST_PP_CAT(algorithm,_symmetric_manifest_test)) { \
+		check_manifest<cryptox::algorithm>(description);                 \
+	}
+
+CRYPTOX_PP_FOR_EACH_SYMMETRIC_ALGORITHM(SYMMETRIC_MANIFEST_TEST)
