@@ -35,9 +35,10 @@ BOOST_AUTO_TEST_CASE(nonrepeat_randomize_test) {
 	BOOST_FOREACH(const buffer_type& buffer, buffers) {
 		size_t instances = 0;
 
-		for (const auto& other : buffers)
+		BOOST_FOREACH(const buffer_type& other, buffers) {
 			if (buffer == other)
 				++instances;
+		}
 
 		// We should only have one instance per random buffer.
 		BOOST_CHECK_EQUAL(instances, 1);
