@@ -11,5 +11,4 @@
 // [===========================================================================]
 
 #pragma once
-#include "message_digests/digest.hxx"
 #include "key_derivation/pbkdf2.hxx"

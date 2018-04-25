@@ -11,7 +11,9 @@
 // [===========================================================================]
 
 #pragma once
-#include "../message_digests/all.hxx"
+#include "../detail/exceptions.hxx"
+#include "../message_digests/message_digest_algorithm.hxx"
+#include "../block.hxx"
 #include "../block_view.hxx"
 
 namespace cryptox {
@@ -28,7 +30,7 @@ namespace cryptox {
 			(const          char*)k.data, k.size,
 			(const unsigned char*)s.data, s.size,
 			rounds,
-			DigestAlgorithm::evp_md(),
+			DigestAlgorithm::digest(),
 			result.size(),
 			result.data()
 		) != 1)
