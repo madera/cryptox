@@ -11,7 +11,6 @@
 // [===========================================================================]
 
 #include "pch.hxx"
-#include <cryptox/message_digests/digest.hxx>
 #include <cryptox/detail/make_random_string.hxx>
 using namespace cryptox;
 
@@ -31,10 +30,10 @@ using namespace cryptox;
 	MESSAGE_DIGEST_BENCHMARK_RUN(algorithm, 1024); \
 	MESSAGE_DIGEST_BENCHMARK_RUN(algorithm, 8192);
 
-MESSAGE_DIGEST_BENCHMARK(md5);
-MESSAGE_DIGEST_BENCHMARK(sha);
-MESSAGE_DIGEST_BENCHMARK(sha1);
-MESSAGE_DIGEST_BENCHMARK(sha224);
-MESSAGE_DIGEST_BENCHMARK(sha256);
-MESSAGE_DIGEST_BENCHMARK(sha384);
-MESSAGE_DIGEST_BENCHMARK(sha512);
+// MESSAGE_DIGEST_BENCHMARK(md5);
+// MESSAGE_DIGEST_BENCHMARK(sha);
+// MESSAGE_DIGEST_BENCHMARK(sha1);
+// MESSAGE_DIGEST_BENCHMARK(sha224);
+// MESSAGE_DIGEST_BENCHMARK(sha256);
+// MESSAGE_DIGEST_BENCHMARK(sha384);
+// MESSAGE_DIGEST_BENCHMARK(sha512);
