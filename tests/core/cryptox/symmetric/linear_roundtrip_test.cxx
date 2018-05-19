@@ -13,6 +13,8 @@
 #include "pch.hxx"
 #include "endec_pair_tester.hxx"
 
+#define TEST_NAME_SUFFIX _linear_roundtrip_test
+
 template <class Algorithm>
 static void linear_roundtrip_test(const size_t buffer_size = 4096) {
 	cryptox::tests::endec_pair_tester<Algorithm> endec;
@@ -28,9 +30,9 @@ static void linear_roundtrip_test(const size_t buffer_size = 4096) {
 	}
 }
 
-#define LINEAR_ROUNDTRIP_TEST(algorithm, description)                          \
-	BOOST_AUTO_TEST_CASE(BOOST_PP_CAT(algorithm,_linear_roundtrip_test)) { \
-		linear_roundtrip_test<cryptox::algorithm>();                   \
+#define LINEAR_ROUNDTRIP_TEST(algorithm, description)                     \
+	BOOST_AUTO_TEST_CASE(BOOST_PP_CAT(algorithm, TEST_NAME_SUFFIX)) { \
+		linear_roundtrip_test<cryptox::algorithm>();              \
 	}
 
 CRYPTOX_PP_FOR_EACH_SYMMETRIC_ALGORITHM(LINEAR_ROUNDTRIP_TEST)

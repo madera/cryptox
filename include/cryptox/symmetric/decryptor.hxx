@@ -16,8 +16,18 @@
 namespace cryptox {
 
 	template <class Algorithm>
-	class decryptor : public basic_endec<Algorithm, EVP_DecryptInit_ex, EVP_DecryptUpdate, EVP_DecryptFinal_ex> {
-		typedef basic_endec<Algorithm, EVP_DecryptInit_ex, EVP_DecryptUpdate, EVP_DecryptFinal_ex> base_type;
+	class decryptor : public basic_endec<
+		Algorithm,
+		EVP_DecryptInit_ex,
+		EVP_DecryptUpdate,
+		EVP_DecryptFinal_ex
+	> {
+		typedef basic_endec<
+			Algorithm,
+			EVP_DecryptInit_ex,
+			EVP_DecryptUpdate,
+			EVP_DecryptFinal_ex
+		> base_type;
 	public:
 		template <class KeyInputIterator, class IVInputIterator>
 		decryptor(KeyInputIterator key_first, KeyInputIterator key_last,

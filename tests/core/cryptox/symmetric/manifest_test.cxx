@@ -13,14 +13,16 @@
 #include "pch.hxx"
 #include <cryptox/symmetric/symmetric_algorithm.hxx>
 
+#define TEST_NAME_SUFFIX _symmetric_manifest_test
+
 template <class Algorithm>
 static void check_manifest(const std::string description) {
 	BOOST_CHECK_EQUAL(Algorithm::name(), description);
 }
 
-#define SYMMETRIC_MANIFEST_TEST(algorithm, description)                          \
-	BOOST_AUTO_TEST_CASE(BOOST_PP_CAT(algorithm,_symmetric_manifest_test)) { \
-		check_manifest<cryptox::algorithm>(description);                 \
+#define SYMMETRIC_MANIFEST_TEST(algorithm, description)                   \
+	BOOST_AUTO_TEST_CASE(BOOST_PP_CAT(algorithm, TEST_NAME_SUFFIX)) { \
+		check_manifest<cryptox::algorithm>(description);          \
 	}
 
 CRYPTOX_PP_FOR_EACH_SYMMETRIC_ALGORITHM(SYMMETRIC_MANIFEST_TEST)

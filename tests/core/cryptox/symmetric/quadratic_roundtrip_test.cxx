@@ -13,6 +13,8 @@
 #include "pch.hxx"
 #include "endec_pair_tester.hxx"
 
+#define TEST_NAME_SUFFIX _quadratic_roundtrip_test
+
 template <class Algorithm>
 void quadratic_roundtrip_endec_test(const size_t rounds = 4096) {
 	cryptox::tests::endec_pair_tester<Algorithm> endec;
@@ -23,9 +25,9 @@ void quadratic_roundtrip_endec_test(const size_t rounds = 4096) {
 	}
 }
 
-#define QUADRATIC_ROUNDTRIP_TEST(algorithm, description)                          \
-	BOOST_AUTO_TEST_CASE(BOOST_PP_CAT(algorithm,_quadratic_roundtrip_test)) { \
-		quadratic_roundtrip_endec_test<cryptox::algorithm>();             \
+#define QUADRATIC_ROUNDTRIP_TEST(algorithm, description)                  \
+	BOOST_AUTO_TEST_CASE(BOOST_PP_CAT(algorithm, TEST_NAME_SUFFIX)) { \
+		quadratic_roundtrip_endec_test<cryptox::algorithm>();     \
 	}
 
 CRYPTOX_PP_FOR_EACH_SYMMETRIC_ALGORITHM(QUADRATIC_ROUNDTRIP_TEST)

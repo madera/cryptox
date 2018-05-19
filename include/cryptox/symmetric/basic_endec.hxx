@@ -26,9 +26,9 @@ namespace cryptox {
 	class evp_cipher_context : boost::noncopyable {
 		EVP_CIPHER_CTX _context;
 	public:
-		template <class KeyInputIterator, class IVInputIterator>
-		evp_cipher_context(KeyInputIterator key_first, KeyInputIterator key_last,
-		                    IVInputIterator  iv_first,  IVInputIterator  iv_last) {
+		template <class KeyInput, class IVInput>
+		evp_cipher_context(KeyInput key_first, KeyInput key_last,
+		                    IVInput  iv_first,  IVInput  iv_last) {
 
 			std::uint8_t key[EVP_MAX_KEY_LENGTH];
 			std::copy(key_first, key_last, key);
@@ -37,7 +37,9 @@ namespace cryptox {
 			std::copy(iv_first, iv_last, iv);
 
 			EVP_CIPHER_CTX_init(&_context);
-			if (InitFx(&_context, Algorithm::cipher(), 0, key, iv) != 1)
+
+			const EVP_CIPHER* cipher = Algorithm::cipher();
+			if (InitFx(&_context, cipher, 0, key, iv) != 1)
 				BOOST_THROW_EXCEPTION(evp_error());
 		}
 
@@ -50,40 +52,39 @@ namespace cryptox {
 				BOOST_THROW_EXCEPTION(evp_error());
 		}
 
-		template <class InputIterator, class OutputIterator>
-		OutputIterator update(InputIterator input_first, InputIterator input_last, OutputIterator output_first) {
-			InputIterator input_itr = input_first;
-			OutputIterator output_itr = output_first;
+		template <class Input, class Output>
+		Output update(Input first, Input last, Output output_first) {
+			Input   itr = first;
+			Output oitr = output_first;
 
-			while (input_itr != input_last) {
-				std::uint8_t  input_buffer[1024];
-				std::uint8_t output_buffer[1024 + EVP_MAX_BLOCK_LENGTH];
+			while (itr != last) {
+				std::uint8_t input[1024];
+				std::uint8_t output[1024 + EVP_MAX_BLOCK_LENGTH];
 
-				size_t input_buffer_size = 0;
-				int   output_buffer_size = 0;
+				size_t i_sz = 0;
+				int    o_sz = 0;
 
-				while (input_buffer_size < sizeof(input_buffer) && input_itr != input_last)
-					input_buffer[input_buffer_size++] = *input_itr++;
+				while (i_sz < sizeof(input) && itr != last)
+					input[i_sz++] = *itr++;
 
-				if (UpdateFx(&_context, output_buffer, &output_buffer_size,
-				             input_buffer, input_buffer_size) != 1)
+				if (UpdateFx(&_context, output, &o_sz, input, i_sz) != 1)
 					return output_first;
 
-				output_itr = std::copy(output_buffer, output_buffer + output_buffer_size, output_itr);
+				oitr = std::copy(output, output + o_sz, oitr);
 			}
 
-			return output_itr;
+			return oitr;
 		}
 
-		template <class OutputIterator>
-		OutputIterator finalize(OutputIterator output_first) {
+		template <class Output>
+		Output finalize(Output output) {
 			std::uint8_t buffer[2*EVP_MAX_BLOCK_LENGTH];
 
 			int written;
 			if (FinalFx(&_context, buffer, &written) != 1)
 				written = 0;
 
-			return std::copy(buffer, buffer + written, output_first);
+			return std::copy(buffer, buffer + written, output);
 		}
 
 	};
@@ -97,12 +98,22 @@ namespace cryptox {
 		openssl::cipher_update_fx_t UpdateFx,
 		openssl::cipher_final_fx_t  FinalFx
 	>
-	struct basic_endec : public evp_cipher_context<Algorithm, InitFx, UpdateFx, FinalFx> {
-		typedef evp_cipher_context<Algorithm, InitFx, UpdateFx, FinalFx> base_type;
+	struct basic_endec : public evp_cipher_context<
+		Algorithm,
+		InitFx,
+		UpdateFx,
+		FinalFx
+	> {
+		typedef evp_cipher_context<
+			Algorithm,
+			InitFx,
+			UpdateFx,
+			FinalFx
+		> base_type;
 
-		template <class KeyInputIterator, class IVInputIterator>
-		basic_endec(KeyInputIterator key_first, KeyInputIterator key_last,
-		             IVInputIterator  iv_first,  IVInputIterator  iv_last)
+		template <class KeyInput, class IVInput>
+		basic_endec(KeyInput key_first, KeyInput key_last,
+		             IVInput  iv_first,  IVInput  iv_last)
 		 : base_type(key_first, key_last, iv_first, iv_last) {
 			// TODO: Use easy PBKDF2 for users.
 			// uint8_t garbled_key[32];
@@ -115,10 +126,10 @@ namespace cryptox {
 			// );
 		}
 
-		template <class InputIterator, class OutputIterator>
-		OutputIterator operator()(InputIterator input_first, InputIterator input_last, OutputIterator output_first) {
+		template <class Input, class Output>
+		Output operator()(Input first, Input last, Output output) {
 			this->reset();
-			OutputIterator itr = this->update(input_first, input_last, output_first);
+			Output itr = this->update(first, last, output);
 			return this->finalize(itr);
 		}
 	};
