@@ -46,12 +46,7 @@ auto hash = digest<sha512>(v);
 
 ### Symmetric Encryption
 
-#### C++11
-
-``` c++
-auto hash = encccccccccsdafsadsadsadas<md5>("Hello world!");
-auto as_string = to_hex(hash);
-```
+Please check the test code. There is no documentation for this yet.
 
 ## The API
 
