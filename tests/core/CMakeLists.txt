@@ -22,10 +22,10 @@ add_executable(core_tests
 	cryptox/detail/make_random_vector_test.cxx
 
 	cryptox/block_test.cxx
-	cryptox/block_view_test.cxx
 
 	cryptox/message_digests/manifest_test.cxx
 	cryptox/message_digests/basic_message_digester_test.cxx
+	cryptox/message_digests/digest_test.cxx
 
 	cryptox/key_derivation/pbkdf2_test.cxx
 
@@ -34,6 +34,8 @@ add_executable(core_tests
 	cryptox/symmetric/linear_roundtrip_test.cxx
 	cryptox/symmetric/quadratic_roundtrip_test.cxx
 )
+
+set_property(TARGET core_tests PROPERTY CXX_STANDARD 11)
 
 target_link_libraries(
 	core_tests
