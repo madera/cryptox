@@ -15,7 +15,6 @@
 
 #ifdef BOOST_NO_CXX11_HDR_ARRAY
 #  include <boost/array.hpp>
-#warning Boost Array
 	namespace cryptox {
 		template<typename T, std::size_t N>
 		struct array {
@@ -24,7 +23,6 @@
 	}
 #else
 #  include <array>
-#warning Std Array
 	namespace cryptox {
 		template<typename T, std::size_t N>
 		struct array {
