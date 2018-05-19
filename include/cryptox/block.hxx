@@ -2,7 +2,7 @@
 // [                               C r y p t o x                               ]
 // [---------------------------------------------------------------------------]
 // [                                                                           ]
-// [                          Copyright (C) 2016-2017                          ]
+// [                          Copyright (C) 2016-2018                          ]
 // [                      Rodrigo Madera <madera@acm.org>                      ]
 // [                                                                           ]
 // [---------------------------------------------------------------------------]
@@ -11,23 +11,38 @@
 // [===========================================================================]
 
 #pragma once
-#include "detail/to_hex.hxx"
-#include <boost/array.hpp>
+#include <boost/config.hpp>
+
+#ifdef BOOST_NO_CXX11_HDR_ARRAY
+#  include <boost/array.hpp>
+#warning Boost Array
+	namespace cryptox {
+		template<typename T, std::size_t N>
+		struct array {
+			typedef boost::array<T, N> type;
+		};
+	}
+#else
+#  include <array>
+#warning Std Array
+	namespace cryptox {
+		template<typename T, std::size_t N>
+		struct array {
+			typedef std::array<T, N> type;
+		};
+	}
+#endif
 
 namespace cryptox {
 
 	template <std::size_t Bits>
 	struct block {
 		BOOST_STATIC_ASSERT(Bits%8 == 0);
-		typedef boost::array<std::uint8_t, Bits/8> type;
+
+		typedef typename array<
+			std::uint8_t,
+			Bits/8
+		>::type type;
 	};
 
 }
-
-#ifndef CRYPTOX_NO_IO
-template <class Char, class Traits, typename T, std::size_t N>
-std::basic_ostream<Char, Traits>&
-operator<<(std::basic_ostream<Char, Traits>& output, const boost::array<T, N>& array) {
-	return output << cryptox::to_hex(array);
-}
-#endif
