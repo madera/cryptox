@@ -11,7 +11,23 @@
 // [===========================================================================]
 
 #include "pch.hxx"
+#include <cryptox/detail/to_hex.hxx>
 #include <cryptox/block.hxx>
+
+//
+// Static Tests
+//
+#ifdef BOOST_NO_CXX11_HDR_ARRAY
+	BOOST_STATIC_ASSERT(boost::is_same<
+		::cryptox::array<int, 42>::type,
+		boost::array<int, 42>
+	>::value);
+#else
+	BOOST_STATIC_ASSERT(boost::is_same<
+		::cryptox::array<int, 42>::type,
+		std::array<int, 42>
+	>::value);
+#endif
 
 BOOST_AUTO_TEST_CASE(block_test) {
 	using namespace cryptox;
@@ -29,13 +45,15 @@ BOOST_AUTO_TEST_CASE(block_test) {
 		BOOST_CHECK_EQUAL(to_hex(block), "12345678");
 	}
 	{
-		block<64>::type block = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef };
+		block<64>::type block = { 0x01, 0x23, 0x45, 0x67,
+		                          0x89, 0xab, 0xcd, 0xef };
 		BOOST_CHECK_EQUAL(to_hex(block), "0123456789abcdef");
 	}
 	{
-		block<64>::type block = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef };
+		block<64>::type block = { 0x01, 0x23, 0x45, 0x67,
+		                          0x89, 0xab, 0xcd, 0xef };
 		std::ostringstream oss;
-		oss << block;
+		oss << to_hex(block);
 		BOOST_CHECK_EQUAL(oss.str(), "0123456789abcdef");
 	}
 }
