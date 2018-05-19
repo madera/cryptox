@@ -12,45 +12,34 @@
 
 #pragma once
 #include <string>
-#include <iterator>
 
 namespace cryptox {
-	namespace detail {
-		template <class InputIterator, class OutputIterator>
-		OutputIterator encode_hex_string(InputIterator first, InputIterator last, OutputIterator d_first) {
-			for (size_t i=0; first != last; ++i) {
-				const bool high_nibble = (i%2 == 0);
-				*d_first++ = "0123456789abcdef"[*first >> 4*high_nibble & 0x0f];
-				if (!high_nibble)
-					++first;
-			}
 
-			return d_first;
+	template <class Input, class Output>
+	Output to_hex(Input first, Input last, Output d_first) {
+		bool is_high_nibble = true;
+		while (first != last) {
+			const int index = *first >> (is_high_nibble? 4 : 0);
+			*d_first++ = "0123456789abcdef"[index & 0x0f];
+
+			is_high_nibble = !is_high_nibble;
+			if (is_high_nibble)
+				++first;
 		}
+
+		return d_first;
 	}
 
-	template <class InputIterator>
-	std::string to_hex(InputIterator first, InputIterator last) {
+	template <class Input>
+	std::string to_hex(Input first, Input last) {
 		std::string result;
-		detail::encode_hex_string(first, last, std::back_inserter(result));
+		to_hex(first, last, std::back_inserter(result));
 		return result;
 	}
 
-	template <typename T>
-	std::string to_hex(const T& x) {
-		return to_hex(x.begin(), x.end());
+	template <typename Container>
+	std::string to_hex(const Container& container) {
+		return to_hex(container.begin(), container.end());
 	}
 
-	template <class Generator>
-	class to_hex_decorator {
-		const Generator& _generator;
-	public:
-		to_hex_decorator(const Generator& generator)
-		 : _generator(generator) {}
-
-		template <typename T>
-		std::string operator()(const T& x) const {
-			return to_hex(_generator(x));
-		}
-	};
 }

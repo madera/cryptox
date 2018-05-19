@@ -2,7 +2,7 @@
 // [                               C r y p t o x                               ]
 // [---------------------------------------------------------------------------]
 // [                                                                           ]
-// [                          Copyright (C) 2016-2017                          ]
+// [                          Copyright (C) 2016-2018                          ]
 // [                      Rodrigo Madera <madera@acm.org>                      ]
 // [                                                                           ]
 // [---------------------------------------------------------------------------]
@@ -15,6 +15,7 @@
 
 namespace cryptox {
 
-	struct evp_error : virtual std::exception, virtual boost::exception {};
+	struct evp_error : virtual   std::exception,
+	                   virtual boost::exception {};
 
 }

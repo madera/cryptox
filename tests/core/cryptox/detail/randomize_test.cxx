@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_CASE(string_randomize_test) {
 	const std::string input = "overwrite";
 	std::string output = input;
 
-	cryptox::detail::randomize(output.begin(), output.end());
+	cryptox::randomize(output.begin(), output.end());
 	BOOST_CHECK(output != input);
 }
 
@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE(nonrepeat_randomize_test) {
 
 	BOOST_FOREACH(buffer_type& buffer, buffers) {
 		buffer.resize(32);
-		cryptox::detail::randomize(buffer.begin(), buffer.end());
+		cryptox::randomize(buffer.begin(), buffer.end());
 	}
 
 	// Scan O(n^2) for duplicates.

@@ -14,16 +14,13 @@
 #include "randomize.hxx"
 #include <vector>
 
-namespace cryptox {
+namespace cryptox { namespace detail {
 
-	namespace detail {
-
-		static inline std::vector<std::uint8_t> make_random_vector(const size_t size = 32) {
-			std::vector<std::uint8_t> result(size);
-			randomize(result.begin(), result.end());
-			return result;
-		}
-
+	static inline
+	std::vector<std::uint8_t> make_random_vector(const size_t size = 32) {
+		std::vector<std::uint8_t> result(size);
+		randomize(result.begin(), result.end());
+		return result;
 	}
 
-}
+}}

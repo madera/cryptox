@@ -14,14 +14,11 @@
 #include "make_random_vector.hxx"
 #include "to_base64.hxx"
 
-namespace cryptox {
+namespace cryptox { namespace detail {
 
-	namespace detail {
-
-		static inline std::string make_random_string(const size_t size = 32) {
-			return to_base64(make_random_vector(size));
-		}
-
+	static inline
+	std::string make_random_string(const size_t size = 32) {
+		return to_base64(make_random_vector(size));
 	}
 
-}
+}}

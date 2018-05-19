@@ -15,20 +15,15 @@
 
 namespace cryptox {
 
-	namespace detail {
+	template <class Output>
+	void randomize(Output first, Output last) {
+		while (first != last) {
+			// Keep this low. It's expensive to get random bits.
+			std::uint8_t input[16];
+			RAND_bytes(input, sizeof(input));
 
-		template <class Iterator>
-		void randomize(Iterator begin, Iterator end) {
-			for (Iterator itr = begin; itr != end; ++itr) {
-				// TODO: Optimize for contiguous ranges.
-
-				// We need to set one element at a time.
-				std::uint8_t tmp;
-				RAND_bytes(&tmp, 1);
-				*itr = tmp;
-			}
+			first = std::copy(input, input + sizeof(input), first);
 		}
-
 	}
 
 }

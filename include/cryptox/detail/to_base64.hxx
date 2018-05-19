@@ -16,56 +16,36 @@
 #include <iterator>
 
 namespace cryptox {
-	namespace detail {
-		template <class InputIterator, class OutputIterator>
-		OutputIterator encode_base64_string(InputIterator first, InputIterator last, OutputIterator d_first) {
-			// NOTE: Non-contiguous implementation.
-			// TODO: Optimize for contiguous containers.
-			// TODO: Add benchmark for non- vs contiguous encoding.
 
-			while (first != last) {
-				// Get three input bytes (24 bits) that will
-				// become four base64 characters.
-				// TODO: Match OpenSSL's internal size.
-				std::uint8_t  input[3];
-				std::uint8_t output[4];
+	template <class Input, class Output>
+	Output to_base64(Input first, Input last, Output d_first) {
+		while (first != last) {
+			std::uint8_t input[128];
+			size_t input_size = 0;
+			while (input_size < sizeof(input) && first != last)
+				input[input_size++] = *first++;
 
-				size_t input_size = 0;
-				while (first != last && input_size < sizeof(input))
-					input[input_size++] = *first++;
+			std::uint8_t output[160];
+			const size_t output_size = EVP_EncodeBlock(output,
+			                                           input,
+			                                           input_size);
 
-				EVP_EncodeBlock(output, input, input_size);
-
-				for (size_t i=0; i<sizeof(output); ++i)
-					*d_first++ = output[i];
-			}
-
-			return d_first;
+			d_first = std::copy(output, output + output_size, d_first);
 		}
+
+		return d_first;
 	}
 
-	template <class InputIterator>
-	std::string to_base64(InputIterator first, InputIterator last) {
+	template <class Input>
+	std::string to_base64(Input first, Input last) {
 		std::string result;
-		detail::encode_base64_string(first, last, std::back_inserter(result));
+		to_base64(first, last, std::back_inserter(result));
 		return result;
 	}
 
-	template <typename T>
-	std::string to_base64(const T& x) {
-		return to_base64(x.begin(), x.end());
+	template <typename Container>
+	std::string to_base64(const Container& container) {
+		return to_base64(container.begin(), container.end());
 	}
 
-	template <class Generator>
-	class to_base64_decorator {
-		const Generator& _generator;
-	public:
-		to_base64_decorator(const Generator& generator)
-		 : _generator(generator) {}
-
-		template <typename T>
-		std::string operator()(const T& x) const {
-			return to_base64(_generator(x));
-		}
-	};
 }
