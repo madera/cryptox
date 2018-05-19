@@ -14,39 +14,43 @@
 #include "../detail/exceptions.hxx"
 #include "../message_digests/message_digest_algorithm.hxx"
 #include "../block.hxx"
-#include "../block_view.hxx"
 
 namespace cryptox {
 
-	template <class DigestAlgorithm, std::size_t Bits, class Key, class Salt>
-	typename block<Bits>::type
-	pbkdf2(Key key, Salt salt, const size_t rounds) {
-		typename block<Bits>::type result;
+	template <
+		class DigestAlgorithm,
+		typename Key,
+		typename Salt,
+		typename Output
+	>
+	Output pbkdf2(Key   key_first, Key   key_last,
+	              Salt salt_first, Salt salt_last,
+	              const size_t rounds,
+		      Output output,
+		      const size_t bits = DigestAlgorithm::bits()) {
 
-		const block_view k = to_block_view(key);
-		const block_view s = to_block_view(salt);
+		std::vector<char> key;
+		std::copy(key_first, key_last, std::back_inserter(key));
+
+		std::vector<std::uint8_t> salt;
+		std::copy(salt_first, salt_last, std::back_inserter(salt));
+
+		std::uint8_t result[EVP_MAX_KEY_LENGTH];
 
 		if (PKCS5_PBKDF2_HMAC(
-			(const          char*)k.data, k.size,
-			(const unsigned char*)s.data, s.size,
+			&key [0], key .size(),
+			&salt[0], salt.size(),
 			rounds,
 			DigestAlgorithm::digest(),
-			result.size(),
-			result.data()
+			sizeof(result),
+			result
 		) != 1)
 			BOOST_THROW_EXCEPTION(evp_error());
 
-		return result;
-	}
+		Output itr = std::copy(result, result + bits/8, output);
+		std::fill(result, result + sizeof(result), 0);
 
-	template <class DigestAlgorithm, std::size_t Bits, class Key>
-	typename block<Bits>::type
-	pbkdf2(Key key, const size_t rounds) {
-		return pbkdf2<DigestAlgorithm, Bits>(
-			key,
-			block_view(),
-			rounds
-		);
+		return itr;
 	}
 
 }
