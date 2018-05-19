@@ -47,10 +47,10 @@
 #  define CRYPTOX_MESSAGE_DIGEST_ALGORITHM_SHA
 #else
 #  define CRYPTOX_MESSAGE_DIGEST_ALGORITHM_SHA \
-	((sha,   160, "SHA"            )) \
-	((sha1,  160, "SHA1"           )) \
-	((dss,   160, "DSA-SHA"        )) \
-	((dss1,  160, "DSA"            )) \
+	((sha,   160, "SHA"            ))      \
+	((sha1,  160, "SHA1"           ))      \
+	((dss,   160, "DSA-SHA"        ))      \
+	((dss1,  160, "DSA"            ))      \
 	((ecdsa, 160, "ecdsa-with-SHA1"))
 #endif
 
@@ -58,7 +58,7 @@
 #  define CRYPTOX_MESSAGE_DIGEST_ALGORITHM_SHA256
 #else
 #  define CRYPTOX_MESSAGE_DIGEST_ALGORITHM_SHA256 \
-	((sha224, 224, "SHA224" )) \
+	((sha224, 224, "SHA224"))                 \
 	((sha256, 256, "SHA256"))
 #endif
 
@@ -66,7 +66,7 @@
 #  define CRYPTOX_MESSAGE_DIGEST_ALGORITHM_SHA512
 #else
 #  define CRYPTOX_MESSAGE_DIGEST_ALGORITHM_SHA512 \
-	((sha384, 384, "SHA384" )) \
+	((sha384, 384, "SHA384"))                 \
 	((sha512, 512, "SHA512"))
 #endif
 
@@ -74,14 +74,14 @@
 #  define CRYPTOX_MESSAGE_DIGEST_ALGORITHM_RIPEMD
 #else
 #  define CRYPTOX_MESSAGE_DIGEST_ALGORITHM_RIPEMD \
-	((ripemd160, 160, "RIPEMD160" ))
+	((ripemd160, 160, "RIPEMD160"))
 #endif
 
 #ifdef OPENSSL_NO_WHIRLPOOL
 #  define CRYPTOX_MESSAGE_DIGEST_ALGORITHM_WHIRLPOOL
 #else
 #  define CRYPTOX_MESSAGE_DIGEST_ALGORITHM_WHIRLPOOL \
-	((whirlpool, 512, "whirlpool" ))
+	((whirlpool, 512, "whirlpool"))
 #endif
 
 #define CRYPTOX_MESSAGE_DIGEST_ALGORITHMS          \

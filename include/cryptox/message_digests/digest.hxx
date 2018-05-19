@@ -11,16 +11,19 @@
 // [===========================================================================]
 
 #pragma once
-#include "message_digester.hxx"
+#include "basic_message_digester.hxx"
+#include "message_digest_algorithm.hxx"
 
 namespace cryptox {
 
-	template <class Algorithm, class MemoryBlock>
+	template <class Algorithm, class Container>
 	typename Algorithm::digest_type
-	digest(MemoryBlock block) {
-		message_digester<Algorithm> digester;
-		digester.update(block);
-		return digester.digest();
+	digest(const Container& container) {
+		typename Algorithm::digest_type result;
+		basic_message_digester<Algorithm>()(container.begin(),
+		                                    container.end(),
+		                                    result.begin());
+		return result;
 	}
 
 	template <class Algorithm, class POD>
@@ -29,24 +32,17 @@ namespace cryptox {
 		typename Algorithm::digest_type
 	>::type
 	digest(const POD* data, const size_t size) {
-		return digest<Algorithm>(block_view(data, size));
+		typename Algorithm::digest_type result;
+		basic_message_digester<Algorithm>()(data,
+		                                    data + size,
+		                                    result.begin());
+		return result;
 	}
 
 	template <class Algorithm>
 	typename Algorithm::digest_type
-	digest(std::ifstream& file, boost::optional<size_t> max = boost::none) {
-		message_digester<Algorithm> digester;
-		digester.update(file);
-		return digester.digest();
+	digest(const char* c_str) {
+		return digest<Algorithm>(c_str, strlen(c_str));
 	}
-
-	template <class Algorithm>
-	struct digester {
-		template <typename T>
-		typename Algorithm::digest_type
-		operator()(const T& x) const {
-			return digest<Algorithm>(x);
-		}
-	};
 
 }
