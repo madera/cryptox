@@ -19,7 +19,7 @@ namespace cryptox {
 	void randomize(Output first, Output last) {
 		while (first != last) {
 			// Keep this low. It's expensive to get random bits.
-			std::uint8_t input[16];
+			std::uint8_t input[1];
 			RAND_bytes(input, sizeof(input));
 
 			first = std::copy(input, input + sizeof(input), first);

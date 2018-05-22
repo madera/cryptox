@@ -33,6 +33,7 @@ add_executable(core_tests
 	cryptox/symmetric/basic_endec_test.cxx
 	cryptox/symmetric/linear_roundtrip_test.cxx
 	cryptox/symmetric/quadratic_roundtrip_test.cxx
+	cryptox/symmetric/iostreams/basic_endec_filter_test
 )
 
 set_property(TARGET core_tests PROPERTY CXX_STANDARD 11)

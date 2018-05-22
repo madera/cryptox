@@ -86,10 +86,10 @@ namespace cryptox {
 		EVP_DigestFinal_ex
 	> {
 		template <class Input, class Output>
-		Output operator()(Input first, Input last, Output output) {
+		Output operator()(Input first, Input last, Output d_first) {
 			this->reset();
 			this->update(first, last);
-			return this->finalize(output);
+			return this->finalize(d_first);
 		}
 	};
 

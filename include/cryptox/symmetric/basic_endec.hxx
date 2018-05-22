@@ -53,10 +53,11 @@ namespace cryptox {
 		}
 
 		template <class Input, class Output>
-		Output update(Input first, Input last, Output output_first) {
+		Output update(Input first, Input last, Output d_first) {
 			Input   itr = first;
-			Output oitr = output_first;
+			Output oitr = d_first;
 
+size_t ___total = 0;
 			while (itr != last) {
 				std::uint8_t input[1024];
 				std::uint8_t output[1024 + EVP_MAX_BLOCK_LENGTH];
@@ -68,23 +69,27 @@ namespace cryptox {
 					input[i_sz++] = *itr++;
 
 				if (UpdateFx(&_context, output, &o_sz, input, i_sz) != 1)
-					return output_first;
+					return d_first;
 
 				oitr = std::copy(output, output + o_sz, oitr);
+				___total += o_sz;
 			}
+
+std::cerr << "$endec: update(" << std::distance(first, last) << ") -> " << ___total << std::endl;
 
 			return oitr;
 		}
 
 		template <class Output>
-		Output finalize(Output output) {
+		Output finalize(Output first) {
 			std::uint8_t buffer[2*EVP_MAX_BLOCK_LENGTH];
 
 			int written;
 			if (FinalFx(&_context, buffer, &written) != 1)
 				written = 0;
 
-			return std::copy(buffer, buffer + written, output);
+std::cerr << "$endec: finalize() -> " << written << std::endl;
+			return std::copy(buffer, buffer + written, first);
 		}
 
 	};
@@ -111,6 +116,8 @@ namespace cryptox {
 			FinalFx
 		> base_type;
 
+		typedef Algorithm algorithm_type;
+
 		template <class KeyInput, class IVInput>
 		basic_endec(KeyInput key_first, KeyInput key_last,
 		             IVInput  iv_first,  IVInput  iv_last)
@@ -127,9 +134,9 @@ namespace cryptox {
 		}
 
 		template <class Input, class Output>
-		Output operator()(Input first, Input last, Output output) {
+		Output operator()(Input first, Input last, Output d_first) {
 			this->reset();
-			Output itr = this->update(first, last, output);
+			Output itr = this->update(first, last, d_first);
 			return this->finalize(itr);
 		}
 	};
