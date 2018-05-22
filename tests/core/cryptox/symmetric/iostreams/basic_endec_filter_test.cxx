@@ -3,6 +3,9 @@
 #include <cryptox/symmetric/iostreams/basic_endec_filter.hxx>
 #include <cryptox/symmetric/iostreams/evp_encryptor.hxx>
 #include <cryptox/symmetric/iostreams/evp_decryptor.hxx>
+#include <cryptox/symmetric/symmetric_algorithm.hxx>
+#include <cryptox/symmetric/encryptor.hxx>
+#include <cryptox/symmetric/decryptor.hxx>
 #include <cryptox/detail/make_random_vector.hxx>
 
 #include <boost/iostreams/filtering_stream.hpp>
@@ -16,9 +19,6 @@ static std::vector<std::uint8_t> key = cryptox::detail::make_random_vector(32);
 
 template <typename Input, typename Output>
 static void encrypt_using_filter(Input first, Input last, Output d_first) {
-	std::cerr << "+++ encrypting using filter (" << std::distance(first, last) << " input bytes)" << std::endl;
-	std::cerr << "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" << std::endl;
-
 	boost::iostreams::filtering_ostream output;
 	output.push(cryptox::create_filter(
 		new cryptox::encryptor<cipher_type> (
@@ -26,29 +26,18 @@ static void encrypt_using_filter(Input first, Input last, Output d_first) {
 			iv.begin(),  iv.end()
 		)
 	));
+
 	output.push(d_first);
 
-	// FIX FIX FIX
-	auto input = (const char*)&(*first);
+	// Ugly, but effective for this test module.
+	const char* input = (const char*)&(*first);
 
 	boost::iostreams::write(output, input, std::distance(first, last));
-//	output.reset();
+	output.reset();
 }
 
 template <typename Input, typename Output>
 static void decrypt_using_filter(Input first, Input last, Output d_first) {
-	std::cerr << "+++ decrypting using filter (" << std::distance(first, last) << " input bytes)" << std::endl;
-	std::cerr << "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" << std::endl;
-
-	// boost::iostreams::filtering_istream input;
-	// input.push(boost::iostreams::evp_decryptor<EVP_aes_256_cbc>(g_key, g_salt, g_iv));
-	// input.push(boost::iostreams::array_source(encrypted.data(), encrypted.size()));
-
-	// std::vector<char> decrypted;
-	// boost::iostreams::copy(input, std::back_inserter(decrypted));
-	// return decrypted;
-
-//////
 	boost::iostreams::filtering_istream input;
 	input.push(cryptox::create_filter(
 		new cryptox::decryptor<cipher_type> (
@@ -57,22 +46,16 @@ static void decrypt_using_filter(Input first, Input last, Output d_first) {
 		)
 	));
 
-// 	input.push(boost::iostreams::array_source(encrypted.data(), encrypted.size()));
+	// Ugly, but effective for this test module.
+	const char* input_ = (const char*)&(*first);
 
-	auto inputd = (const char*)&(*first); // XXXXX
- 	input.push(boost::iostreams::array_source(inputd, std::distance(first, last)));
+ 	input.push(boost::iostreams::array_source(input_, std::distance(first, last)));
 
-	std::vector<char> decrypted;
-	boost::iostreams::copy(input, std::back_inserter(decrypted));
-// 	boost::iostreams::copy(input, d_first);
+ 	boost::iostreams::copy(input, d_first);
 	input.reset();
-//	input.flush();
-
-	std::cerr << " -> decrypted bytes using filter: " << decrypted.size() << std::endl;
-	std::copy(decrypted.begin(), decrypted.end(), d_first);
 }
 
-// // ---------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 template <typename Input, typename Output>
 static Output encrypt_using_direct(Input first, Input last, Output d_first) {
@@ -86,7 +69,7 @@ static Output decrypt_using_direct(Input first, Input last, Output d_first) {
 	return decryptor(first, last, d_first);
 }
 
-// // ---------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 template <typename Input, typename Output>
 static Output perform_encryptions(Input first, Input last, Output d_first) {
@@ -95,10 +78,6 @@ static Output perform_encryptions(Input first, Input last, Output d_first) {
 
 	encrypt_using_filter(first, last, std::back_inserter(filter));
 	encrypt_using_direct(first, last, std::back_inserter(direct));
-
-std::cerr << 'e' << 'Z' << std::distance(first, last)
-	  << ' ' << 'F' << filter.size()
-	  << ' ' << 'D' << direct.size() << std::endl;
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(filter.begin(), filter.end(), direct.begin(), direct.end());
 
@@ -113,21 +92,15 @@ static Output perform_decryptions(Input first, Input last, Output d_first) {
 	decrypt_using_filter(first, last, std::back_inserter(filter));
 	decrypt_using_direct(first, last, std::back_inserter(direct));
 
-std::cerr << 'd' << 'Z' << std::distance(first, last)
-	  << ' ' << 'F' << filter.size()
-	  << ' ' << 'D' << direct.size() << std::endl;
-
 	BOOST_CHECK_EQUAL_COLLECTIONS(filter.begin(), filter.end(), direct.begin(), direct.end());
 
 	return std::copy(filter.begin(), filter.end(), d_first);
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 template <typename Input>
 static void roundtrip_test(Input first, Input last) {
-
-	std::cerr << "---------------------------------------------------------------------------------------------------------------------" << std::endl;
 	std::cerr << "RT" << std::distance(first, last) << std::endl;
 
 	std::vector<std::uint8_t> encrypted;
@@ -140,13 +113,13 @@ static void roundtrip_test(Input first, Input last) {
 }
 
 BOOST_AUTO_TEST_CASE(basic_endec_filter_test) {
-	std::vector<std::uint8_t> input = cryptox::detail::make_random_vector(4200);
+	std::vector<std::uint8_t> input = cryptox::detail::make_random_vector(9000);
 
 	//
 	// Slice input and test along...
 	//
-	const size_t initial = 4100;
-	size_t increment = 100;
+	const size_t initial = 0;
+	size_t increment = 1;
 	for (size_t i=initial; i<input.size(); i+=increment)
 		roundtrip_test(input.begin(), input.begin() + i);
 }

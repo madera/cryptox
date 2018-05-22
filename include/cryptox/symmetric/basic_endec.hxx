@@ -57,7 +57,6 @@ namespace cryptox {
 			Input   itr = first;
 			Output oitr = d_first;
 
-size_t ___total = 0;
 			while (itr != last) {
 				std::uint8_t input[1024];
 				std::uint8_t output[1024 + EVP_MAX_BLOCK_LENGTH];
@@ -72,10 +71,7 @@ size_t ___total = 0;
 					return d_first;
 
 				oitr = std::copy(output, output + o_sz, oitr);
-				___total += o_sz;
 			}
-
-std::cerr << "$endec: update(" << std::distance(first, last) << ") -> " << ___total << std::endl;
 
 			return oitr;
 		}
@@ -88,7 +84,6 @@ std::cerr << "$endec: update(" << std::distance(first, last) << ") -> " << ___to
 			if (FinalFx(&_context, buffer, &written) != 1)
 				written = 0;
 
-std::cerr << "$endec: finalize() -> " << written << std::endl;
 			return std::copy(buffer, buffer + written, first);
 		}
 
