@@ -47,8 +47,7 @@
 #  define CRYPTOX_MESSAGE_DIGEST_ALGORITHM_SHA
 #else
 #  define CRYPTOX_MESSAGE_DIGEST_ALGORITHM_SHA \
-	((sha1,  160, "SHA1"           ))      \
-	((ecdsa, 160, "ecdsa-with-SHA1"))
+	((sha1,  160, "SHA1"           ))
 #endif
 
 #ifdef OPENSSL_NO_SHA256
