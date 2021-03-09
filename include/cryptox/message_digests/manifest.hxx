@@ -48,7 +48,6 @@
 #else
 #  define CRYPTOX_MESSAGE_DIGEST_ALGORITHM_SHA \
 	((sha1,  160, "SHA1"           ))      \
-	((dss,   160, "DSA-SHA"        ))      \
 	((dss1,  160, "DSA"            ))      \
 	((ecdsa, 160, "ecdsa-with-SHA1"))
 #endif
