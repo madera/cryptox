@@ -25,21 +25,21 @@ namespace cryptox {
 	>
 	class evp_message_digest_context : boost::noncopyable {
 		typedef evp_message_digest_context this_type;
-		EVP_MD_CTX _context;
+		EVP_MD_CTX* _context;
 	public:
 		evp_message_digest_context() {
-			EVP_MD_CTX_init(&_context);
+			_context = EVP_MD_CTX_new();
 
-			if (InitFx(&_context, Algorithm::digest(), NULL) == 0)
+			if (InitFx(_context, Algorithm::digest(), NULL) == 0)
 				BOOST_THROW_EXCEPTION(evp_error());
 		}
 
 		~evp_message_digest_context() {
-			EVP_MD_CTX_cleanup(&_context);
+			EVP_MD_CTX_free(_context);
 		}
 
 		void reset() {
-			if (InitFx(&_context, 0, 0) != 1)
+			if (InitFx(_context, 0, 0) != 1)
 				BOOST_THROW_EXCEPTION(evp_error());
 		}
 
@@ -54,7 +54,7 @@ namespace cryptox {
 				while (size < sizeof(buffer) && itr != last)
 					buffer[size++] = *itr++;
 
-				if (UpdateFx(&_context, buffer, size) != 1)
+				if (UpdateFx(_context, buffer, size) != 1)
 					BOOST_THROW_EXCEPTION(evp_error());
 			}
 
@@ -66,7 +66,7 @@ namespace cryptox {
 			std::uint8_t buffer[2*EVP_MAX_BLOCK_LENGTH];
 
 			unsigned int written;
-			if (FinalFx(&_context, buffer, &written) != 1)
+			if (FinalFx(_context, buffer, &written) != 1)
 				written = 0;
 
 			return std::copy(buffer, buffer + written, first);
