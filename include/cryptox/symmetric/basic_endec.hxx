@@ -24,31 +24,31 @@ namespace cryptox {
 		openssl::cipher_final_fx_t  FinalFx
 	>
 	class evp_cipher_context : boost::noncopyable {
-		EVP_CIPHER_CTX _context;
+		EVP_CIPHER_CTX* _context;
+
 	public:
 		template <class KeyInput, class IVInput>
 		evp_cipher_context(KeyInput key_first, KeyInput key_last,
 		                    IVInput  iv_first,  IVInput  iv_last) {
-
 			std::uint8_t key[EVP_MAX_KEY_LENGTH];
 			std::copy(key_first, key_last, key);
 
 			std::uint8_t iv[EVP_MAX_IV_LENGTH];
 			std::copy(iv_first, iv_last, iv);
 
-			EVP_CIPHER_CTX_init(&_context);
+			_context = EVP_CIPHER_CTX_new();
 
 			const EVP_CIPHER* cipher = Algorithm::cipher();
-			if (InitFx(&_context, cipher, 0, key, iv) != 1)
+			if (InitFx(_context, cipher, 0, key, iv) != 1)
 				BOOST_THROW_EXCEPTION(evp_error());
 		}
 
 		~evp_cipher_context() {
-			EVP_CIPHER_CTX_cleanup(&_context);
+			EVP_CIPHER_CTX_free(_context);
 		}
 
 		void reset() {
-			if (InitFx(&_context, 0, 0, 0, 0) != 1)
+			if (InitFx(_context, 0, 0, 0, 0) != 1)
 				BOOST_THROW_EXCEPTION(evp_error());
 		}
 
@@ -67,7 +67,7 @@ namespace cryptox {
 				while (i_sz < sizeof(input) && itr != last)
 					input[i_sz++] = *itr++;
 
-				if (UpdateFx(&_context, output, &o_sz, input, i_sz) != 1)
+				if (UpdateFx(_context, output, &o_sz, input, i_sz) != 1)
 					return d_first;
 
 				oitr = std::copy(output, output + o_sz, oitr);
@@ -81,7 +81,7 @@ namespace cryptox {
 			std::uint8_t buffer[2*EVP_MAX_BLOCK_LENGTH];
 
 			int written;
-			if (FinalFx(&_context, buffer, &written) != 1)
+			if (FinalFx(_context, buffer, &written) != 1)
 				written = 0;
 
 			return std::copy(buffer, buffer + written, first);
