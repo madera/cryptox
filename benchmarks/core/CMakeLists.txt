@@ -19,6 +19,7 @@ add_executable(core_benchmarks
 
 target_link_libraries(
 	core_benchmarks
+	${CMAKE_THREAD_LIBS_INIT}
 	${Boost_LIBRARIES}
 	${OPENSSL_LIBRARIES}
 )

@@ -10,6 +10,7 @@
 # [ Read accompanying LICENSE or copy at http://www.boost.org/LICENSE_1_0.txt ]
 # [===========================================================================]
 
+find_package(Threads)
 find_package(Boost COMPONENTS test_exec_monitor REQUIRED)
 find_package(OpenSSL REQUIRED)
 
