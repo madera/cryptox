@@ -51,7 +51,9 @@ static void decrypt_using_filter(Input first, Input last, Output d_first) {
 
  	input.push(boost::iostreams::array_source(input_, std::distance(first, last)));
 
- 	boost::iostreams::copy(input, d_first);
+	if (std::distance(first, last) > 0)
+		boost::iostreams::copy(input, d_first);
+
 	input.reset();
 }
 
@@ -59,6 +61,10 @@ static void decrypt_using_filter(Input first, Input last, Output d_first) {
 
 template <typename Input, typename Output>
 static Output encrypt_using_direct(Input first, Input last, Output d_first) {
+	// Mimic filter behaviour on null input.
+	if (std::distance(first, last) == 0)
+		return d_first;
+
 	cryptox::encryptor<cipher_type> encryptor(key.begin(), key.end(), iv.begin(), iv.end());
 	return encryptor(first, last, d_first);
 }
@@ -79,7 +85,8 @@ static Output perform_encryptions(Input first, Input last, Output d_first) {
 	encrypt_using_filter(first, last, std::back_inserter(filter));
 	encrypt_using_direct(first, last, std::back_inserter(direct));
 
-	BOOST_CHECK_EQUAL_COLLECTIONS(filter.begin(), filter.end(), direct.begin(), direct.end());
+	BOOST_CHECK_EQUAL_COLLECTIONS(filter.begin(), filter.end(),
+	                              direct.begin(), direct.end());
 
 	return std::copy(filter.begin(), filter.end(), d_first);
 }
@@ -101,8 +108,6 @@ static Output perform_decryptions(Input first, Input last, Output d_first) {
 
 template <typename Input>
 static void roundtrip_test(Input first, Input last) {
-	std::cerr << "RT" << std::distance(first, last) << std::endl;
-
 	std::vector<std::uint8_t> encrypted;
 	std::vector<std::uint8_t> decrypted;
 
