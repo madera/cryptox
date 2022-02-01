@@ -9,25 +9,39 @@ namespace cryptox {
 	class basic_endec_filter : boost::noncopyable {
 		typedef typename Endec::algorithm_type algorithm_type;
 
+protected:
 		// Yes, we must be compatible with C++03... :(
 		std::auto_ptr<Endec> _endec;
 
-		// Cached output
+		// Cached output.
 		std::deque<char> _output;
 		bool _finalized;
 		
+		std::size_t _total_input;
+		std::size_t _total_output;
+
 		void finalize() {
-			if (!_finalized) {
-				_endec->finalize(std::back_inserter(_output));
-				_finalized = true;
-			}
+			if (!_finalized)
+				if (_endec->total_input() > 0) // XXX: Discard unused rotation.
+					_endec->finalize(std::back_inserter(_output));
+
+			_finalized = true;
+		}
+
+	protected:
+		void reset_endec(Endec* newcomer) {
+			_endec.reset(newcomer);
+			_finalized = false;
 		}
 
 	public:
 		typedef char char_type;
 
 		basic_endec_filter(Endec* endec)
-		 : _endec(endec), _finalized(false) {
+		 : _endec(endec),
+		   _finalized(false),
+		   _total_input(0),
+		   _total_output(0) {
 		}
 
 		bool filter(const char*& src_begin, const char* src_end, char*& dest_begin, char* dest_end, bool must_flush) {
@@ -36,6 +50,7 @@ namespace cryptox {
 
 			// Process Input...
 			_endec->update(src_begin, src_end, std::back_inserter(_output));
+			_total_input += std::distance(src_begin, src_end);
 			src_begin = src_end;
 
 			// Process Output...
@@ -48,6 +63,7 @@ namespace cryptox {
 				std::copy_n(_output.begin(), output_capacity, dest_begin);
 				_output.erase(_output.begin(), _output.begin() + output_capacity);
 				dest_begin += output_capacity;
+				_total_output += output_capacity;
 			}
 
 			if (must_flush) {
@@ -61,6 +77,14 @@ namespace cryptox {
 		void close() {
 			_endec->reset();
 			_finalized = false;
+		}
+
+		const size_t total_input() const {
+			return _total_input;
+		}
+
+		const size_t total_output() const {
+			return _total_output;
 		}
 	};
 
@@ -85,7 +109,6 @@ namespace cryptox {
 	};
 
 	BOOST_IOSTREAMS_PIPABLE(basic_evp_filter, 1)
-
 }
 
 namespace cryptox {
