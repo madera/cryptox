@@ -20,6 +20,9 @@ add_executable(core_tests
 	cryptox/detail/randomize_test.cxx
 	cryptox/detail/make_random_string_test.cxx
 	cryptox/detail/make_random_vector_test.cxx
+	cryptox/detail/is_encryptor_test.cxx
+	cryptox/detail/is_decryptor_test.cxx
+	cryptox/detail/is_container_test.cxx
 
 	cryptox/block_test.cxx
 
@@ -34,6 +37,7 @@ add_executable(core_tests
 	cryptox/symmetric/linear_roundtrip_test.cxx
 	cryptox/symmetric/quadratic_roundtrip_test.cxx
 	cryptox/symmetric/iostreams/basic_endec_filter_test
+	cryptox/symmetric/iostreams/rotating_endec_filter_test
 )
 
 set_property(TARGET core_tests PROPERTY CXX_STANDARD 11)
