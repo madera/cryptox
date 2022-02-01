@@ -13,11 +13,17 @@
 #pragma once
 #include "basic_message_digester.hxx"
 #include "message_digest_algorithm.hxx"
+#include "../detail/is_container.hxx"
+
+#include <boost/mpl/not.hpp>
 
 namespace cryptox {
 
 	template <class Algorithm, class Container>
-	typename Algorithm::digest_type
+	typename boost::enable_if<
+		detail::is_container<Container>,
+		typename Algorithm::digest_type
+	>::type
 	digest(const Container& container) {
 		typename Algorithm::digest_type result;
 		basic_message_digester<Algorithm>()(container.begin(),
@@ -35,6 +41,24 @@ namespace cryptox {
 		typename Algorithm::digest_type result;
 		basic_message_digester<Algorithm>()(data,
 		                                    data + size,
+		                                    result.begin());
+		return result;
+	}
+
+	template <class Algorithm, class POD, std::size_t N>
+	typename boost::enable_if<
+		boost::mpl::and_<
+			boost::is_pod<POD>,
+			boost::mpl::not_<
+				boost::is_same<POD, char>
+			>
+		>,
+		typename Algorithm::digest_type
+	>::type
+	digest(const POD (&array)[N]) {
+		typename Algorithm::digest_type result;
+		basic_message_digester<Algorithm>()(array,
+		                                    array + N,
 		                                    result.begin());
 		return result;
 	}
