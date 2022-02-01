@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(cxx03_digest_test) {
 }
 
 BOOST_AUTO_TEST_CASE(c_array_digest_test) {
-	const char c_array[] = { 0x00, 0x10, 0x20, 0x30 };
+	const std::uint8_t c_array[] = { 0x00, 0x10, 0x20, 0x30 };
 	const sha1::digest_type hash = digest<sha1>(c_array);
 	const std::string str = to_hex(hash);
 	BOOST_CHECK_EQUAL(str, "e89fc658068627378403ebfdcefcb13250579b50");
@@ -48,4 +48,15 @@ BOOST_AUTO_TEST_CASE(vector_digest_test) {
 	const md5::digest_type hash = digest<md5>(vector);
 	const std::string str = to_hex(hash);
 	BOOST_CHECK_EQUAL(str, "08d6c05a21512a79a1dfeb9d2a8f262f");
+}
+
+BOOST_AUTO_TEST_CASE(uint32_array_digest_test) {
+	const cryptox::array<std::uint32_t, 4>::type array = {
+		0x00000000, 0x11111111,
+		0x22222222, 0x33333333
+	};
+
+	const md5::digest_type hash = digest<md5>(array);
+	const std::string str = to_hex(hash);
+	BOOST_CHECK_EQUAL(str, "89dfed81253840a81164dee0ed6be878");
 }
