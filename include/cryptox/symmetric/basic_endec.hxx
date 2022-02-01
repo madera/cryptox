@@ -26,10 +26,26 @@ namespace cryptox {
 	class evp_cipher_context : boost::noncopyable {
 		EVP_CIPHER_CTX* _context;
 
+		std::size_t _padding = Algorithm::block_size();
+
+		std::size_t _total_input = 0;
+		std::size_t _total_output = 0;
+
+	public:
+		std::size_t total_input() const {
+			return _total_input;
+		}
+
+		std::size_t total_output() const {
+			return _total_output;
+		}
+
 	public:
 		template <class KeyInput, class IVInput>
 		evp_cipher_context(KeyInput key_first, KeyInput key_last,
-		                    IVInput  iv_first,  IVInput  iv_last) {
+		                    IVInput  iv_first,  IVInput  iv_last)
+		 : _total_input(0),
+		   _total_output(0) {
 			std::uint8_t key[EVP_MAX_KEY_LENGTH];
 			std::copy(key_first, key_last, key);
 
@@ -49,7 +65,12 @@ namespace cryptox {
 
 		void reset() {
 			if (InitFx(_context, 0, 0, 0, 0) != 1)
-				BOOST_THROW_EXCEPTION(evp_error());
+				BOOST_THROW_EXCEPTION(evp_error(/* TODO */));
+
+			padding(_padding);
+
+			_total_input = 0;
+			_total_output = 0;
 		}
 
 		template <class Input, class Output>
@@ -71,6 +92,9 @@ namespace cryptox {
 					return d_first;
 
 				oitr = std::copy(output, output + o_sz, oitr);
+
+				_total_input += i_sz;
+				_total_output += o_sz;
 			}
 
 			return oitr;
@@ -83,6 +107,8 @@ namespace cryptox {
 			int written;
 			if (FinalFx(_context, buffer, &written) != 1)
 				written = 0;
+
+			_total_output += written;
 
 			return std::copy(buffer, buffer + written, first);
 		}
