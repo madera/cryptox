@@ -113,6 +113,14 @@ namespace cryptox {
 			return std::copy(buffer, buffer + written, first);
 		}
 
+		std::size_t padding() const {
+			return _padding;
+		}
+
+		void padding(const std::size_t value) {
+			_padding = value;
+			EVP_CIPHER_CTX_set_padding(_context, _padding);
+		}
 	};
 }
 
