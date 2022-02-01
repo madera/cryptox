@@ -12,6 +12,7 @@
 
 #pragma once
 #include "basic_endec.hxx"
+#include "../detail/is_decryptor.hxx"
 
 namespace cryptox {
 
@@ -37,3 +38,12 @@ namespace cryptox {
 	};
 
 }
+
+namespace cryptox { namespace detail {
+
+	template <class Algorithm>
+	struct is_decryptor<
+		decryptor<Algorithm>
+	> : boost::true_type {};
+
+}}
