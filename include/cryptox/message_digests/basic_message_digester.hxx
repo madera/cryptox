@@ -51,8 +51,12 @@ namespace cryptox {
 				std::uint8_t buffer[1024];
 				size_t size = 0;
 
-				while (size < sizeof(buffer) && itr != last)
-					buffer[size++] = *itr++;
+				const std::size_t element_size = sizeof(*itr);
+				while (size + element_size < sizeof(buffer) && itr != last) {
+					const std::uint8_t* bytes = (const std::uint8_t*)&*itr++;
+					std::copy(bytes, bytes + element_size, &buffer[size]);
+					size += element_size;
+				}
 
 				if (UpdateFx(_context, buffer, size) != 1)
 					BOOST_THROW_EXCEPTION(evp_error());
