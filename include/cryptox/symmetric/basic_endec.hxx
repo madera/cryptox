@@ -151,15 +151,6 @@ namespace cryptox {
 		basic_endec(KeyInput key_first, KeyInput key_last,
 		             IVInput  iv_first,  IVInput  iv_last)
 		 : base_type(key_first, key_last, iv_first, iv_last) {
-			// TODO: Use easy PBKDF2 for users.
-			// uint8_t garbled_key[32];
-			// PKCS5_PBKDF2_HMAC_SHA1(
-			// 	(const char*)&_key[0],  _key.size(),
-			// 	&_salt[0], _salt.size(),
-			// 	key_rounds,
-			// 	EVP_CIPHER_key_length(Cipher()),
-			// 	garbled_key
-			// );
 		}
 
 		template <class Input, class Output>
