@@ -14,6 +14,7 @@
 #include "../detail/openssl.hxx"
 #include "../detail/exceptions.hxx"
 #include <boost/noncopyable.hpp>
+#include <boost/throw_exception.hpp>
 
 namespace cryptox {
 

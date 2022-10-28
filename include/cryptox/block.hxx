@@ -12,6 +12,7 @@
 
 #pragma once
 #include <boost/config.hpp>
+#include <boost/static_assert.hpp>
 
 #ifdef BOOST_NO_CXX11_HDR_ARRAY
 #  include <boost/array.hpp>
